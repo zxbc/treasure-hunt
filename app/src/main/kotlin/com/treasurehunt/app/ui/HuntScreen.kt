@@ -26,12 +26,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -127,14 +125,10 @@ private fun InactiveHuntContent(
                     }
                     var menuExpanded by remember { mutableStateOf(false) }
                     Column(Modifier.fillMaxWidth()) {
-                        OutlinedTextField(
+                        MenuSelectField(
                             value = selected.name,
-                            onValueChange = {},
-                            readOnly = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { menuExpanded = true },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuExpanded) },
+                            expanded = menuExpanded,
+                            onOpen = { menuExpanded = true },
                         )
                         DropdownMenu(
                             expanded = menuExpanded,
@@ -390,16 +384,12 @@ private fun TrackingPicker(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxWidth()) {
-        OutlinedTextField(
+        MenuSelectField(
+            label = stringResource(R.string.tracking_label),
             value = tracked?.let { it.snapshot.name } ?: stringResource(R.string.getting_location),
-            label = { Text(stringResource(R.string.tracking_label)) },
-            onValueChange = {},
-            readOnly = true,
             enabled = spots.isNotEmpty(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(enabled = spots.isNotEmpty()) { expanded = true },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            expanded = expanded,
+            onOpen = { expanded = true },
         )
         DropdownMenu(
             expanded = expanded,

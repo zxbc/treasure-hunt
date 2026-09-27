@@ -1,7 +1,6 @@
 package com.treasurehunt.app.ui
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,10 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -80,18 +77,15 @@ fun SettingsSheet(radius: Int, onDismiss: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(8.dp))
-            OutlinedTextField(
+            MenuSelectField(
+                label = stringResource(R.string.language),
                 value = stringResource(
                     if (currentLanguage == LocalePrefs.TAG_CHINESE)
                         R.string.language_chinese
                     else R.string.language_english,
                 ),
-                onValueChange = {},
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { menuExpanded = true },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuExpanded) },
+                expanded = menuExpanded,
+                onOpen = { menuExpanded = true },
             )
             DropdownMenu(
                 expanded = menuExpanded,

@@ -213,7 +213,9 @@ fun DistanceCompass(
 
         // Distance display in the middle.
         Box(
-            modifier = Modifier.size(discRadius * 2),
+            modifier = Modifier
+                .size(discRadius * 2)
+                .align(Alignment.Center),
             contentAlignment = Alignment.Center,
         ) {
             Column() {
