@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Location
 import android.os.VibrationEffect
 import android.os.Vibrator
+import com.treasurehunt.app.R
 import com.treasurehunt.app.data.LocationEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,7 +54,17 @@ object HuntEngine {
         val mutedLocations: List<LocationSnapshot> = emptyList(),
     )
 
-    val urgencyLabels = listOf("COLD", "WARM", "WARMER", "HOT", "BURNING HOT")
+    /** Localized urgency label; level 0 is coldest, 4 is burning hot. */
+    fun urgencyLabel(context: Context, level: Int): String =
+        context.getString(
+            when (level) {
+                0 -> R.string.urgency_cold
+                1 -> R.string.urgency_warm
+                2 -> R.string.urgency_warmer
+                3 -> R.string.urgency_hot
+                else -> R.string.urgency_burning
+            }
+        )
 
     private val _state = MutableStateFlow(State())
     val state: StateFlow<State> = _state

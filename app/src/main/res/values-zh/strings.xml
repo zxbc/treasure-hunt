@@ -1,0 +1,113 @@
+<resources>
+    <string name="app_name">寻宝</string>
+
+    <!-- Navigation and top bar -->
+    <string name="nav_hunt">寻宝</string>
+    <string name="nav_lists">列表</string>
+    <string name="title_hunt_lists">寻宝列表</string>
+    <string name="cd_settings">设置</string>
+
+    <!-- Settings sheet -->
+    <string name="settings_title">寻宝设置</string>
+    <string name="alert_radius">警报半径</string>
+    <string name="alert_radius_hint">当你与最近的地点距离小于 %1$d 米时开始震动提示。距离越近，震动越急促。</string>
+    <string name="radius_short">短半径——只有离得很近时才会提示</string>
+    <string name="radius_balanced">适中半径</string>
+    <string name="radius_long">长半径——距离较远时就会提示</string>
+    <string name="language">语言</string>
+    <string name="language_hint">更改整个应用的显示语言。</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+
+    <!-- Lists screen -->
+    <string name="lists_empty_title">还没有保存的列表</string>
+    <string name="lists_empty_hint">点击 + 按钮创建你的第一个寻宝列表。</string>
+    <string name="new_list">新建列表</string>
+    <string name="delete_list_title">删除列表</string>
+    <string name="delete_list_confirm">确定删除「%1$s」及其 %2$d 个地点吗？此操作无法撤销。</string>
+    <string name="delete">删除</string>
+    <string name="cancel">取消</string>
+    <string name="edit_list">编辑列表</string>
+    <string name="spot_count">%1$d 个地点</string>
+    <string name="muted_count">%1$d 个已静音</string>
+    <string name="stop_hunt">停止寻宝</string>
+    <string name="activate">开始寻宝</string>
+
+    <!-- Hunt screen -->
+    <string name="hunt_empty_title">还没有寻宝列表</string>
+    <string name="hunt_empty_hint">手动创建或从 JSON 文件导入地点列表，就可以开始寻宝了。</string>
+    <string name="create_list">创建列表</string>
+    <string name="pick_hunt">选择一个列表开始寻宝</string>
+    <string name="hunt_summary">%1$d 个地点 · 警报半径 %2$d 米（可在 ⚙ 设置中更改）</string>
+    <string name="start_hunt">开始寻宝</string>
+    <string name="getting_location">正在获取位置</string>
+    <string name="all_targets_muted">所有目标均已静音</string>
+    <string name="outside_radius">在 %1$s 半径之外</string>
+    <string name="mute_nearest">静音最近目标</string>
+    <string name="stop">停止</string>
+    <string name="muted_spots">已静音的地点</string>
+    <string name="unmute">取消静音</string>
+
+    <!-- Urgency levels, coldest to hottest -->
+    <string name="urgency_cold">冷</string>
+    <string name="urgency_warm">暖</string>
+    <string name="urgency_warmer">更暖</string>
+    <string name="urgency_hot">热</string>
+    <string name="urgency_burning">滚烫</string>
+
+    <!-- Compass -->
+    <string name="cardinal_n">北</string>
+    <string name="cardinal_ne">东北</string>
+    <string name="cardinal_e">东</string>
+    <string name="cardinal_se">东南</string>
+    <string name="cardinal_s">南</string>
+    <string name="cardinal_sw">西南</string>
+    <string name="cardinal_w">西</string>
+    <string name="cardinal_nw">西北</string>
+    <string name="compass_caption">%1$s 方向 · 指向最近的地点</string>
+
+    <!-- List editor -->
+    <string name="cd_back">返回</string>
+    <string name="new_hunt_list">新建寻宝列表</string>
+    <string name="list_name">列表名称</string>
+    <string name="import_from_json">从 JSON 文件导入地点</string>
+    <string name="import_json_hint">JSON 格式：包含列表名称和 locations 数组的对象；每个地点包含 name、description（可选）、lat 和 lon。</string>
+    <string name="add_spot_title">添加地点</string>
+    <string name="spot_name">地点名称</string>
+    <string name="spot_description">描述 / 线索（可选）</string>
+    <string name="latitude">纬度</string>
+    <string name="longitude">经度</string>
+    <string name="error_spot_name">请为地点命名。</string>
+    <string name="error_coordinates_numbers">经纬度必须是数字。</string>
+    <string name="error_coordinates_range">坐标超出范围（纬度 -90 到 90，经度 -180 到 180）。</string>
+    <string name="add_spot">添加地点</string>
+    <string name="spots_in_list">此列表共 %1$d 个地点</string>
+    <string name="remove">移除</string>
+    <string name="error_list_name">请为列表命名。</string>
+    <string name="error_add_spot">请至少添加一个地点。</string>
+    <string name="saving">保存中…</string>
+    <string name="save_list">保存列表</string>
+    <string name="import_failed">导入失败：</string>
+    <string name="import_default_name">导入的寻宝列表</string>
+    <string name="file_read_failed">无法读取该文件。</string>
+    <string name="selected_file_read_failed">无法读取所选文件。</string>
+
+    <!-- JSON import errors -->
+    <string name="import_invalid_json">文件不是有效的 JSON。</string>
+    <string name="import_no_locations">JSON 对象中未找到 locations 数组。</string>
+    <string name="import_missing_name">第 %1$d 个地点缺少名称（name）。</string>
+    <string name="import_missing_coordinates">第 %1$d 个地点「%2$s」缺少坐标。</string>
+    <string name="import_coordinates_out_of_range">第 %1$d 个地点「%2$s」的坐标超出范围。</string>
+
+    <!-- Hunt service notification -->
+    <string name="channel_name">寻宝警报</string>
+    <string name="channel_description">显示当前寻宝活动及其最近目标</string>
+    <string name="hunt_active">寻宝进行中</string>
+    <string name="waiting_for_fix">正在等待位置信息…</string>
+    <string name="no_active_targets">没有活动目标（全部已静音）</string>
+    <string name="notification_urgency_title">%1$s — %2$s</string>
+    <string name="notification_in_range">距离 %1$s——越近震动越强烈</string>
+    <string name="notification_out_of_range">距离 %1$s——在 %2$s 警报半径之外</string>
+    <string name="action_mute_nearest">静音最近</string>
+    <string name="action_stop_hunt">停止寻宝</string>
+</resources>

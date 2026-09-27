@@ -38,9 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.treasurehunt.app.R
 import com.treasurehunt.app.data.HuntImportException
 import com.treasurehunt.app.data.LocationDraft
 
@@ -85,15 +87,15 @@ fun ListEditorScreen(
         try {
             val stream = context.contentResolver.openInputStream(uri)
             val text = stream?.use { it.readBytes().toString(Charsets.UTF_8) }
-                ?: throw HuntImportException("Could not read the selected file.")
-            val parsed = viewModel.importJson(text, "Imported hunt")
+                ?: throw HuntImportException(context.getString(R.string.selected_file_read_failed))
+            val parsed = viewModel.importJson(text, context.getString(R.string.import_default_name))
             if (listName.isBlank()) listName = parsed.name
             spots = spots + parsed.locations
             error = null
         } catch (e: HuntImportException) {
-            error = "Import failed: " + e.message
+            error = context.getString(R.string.import_failed) + e.message
         } catch (e: Exception) {
-            error = "Could not read the file."
+            error = context.getString(R.string.file_read_failed)
         }
     }
 
@@ -104,11 +106,11 @@ fun ListEditorScreen(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.cd_back))
             }
             Spacer(Modifier.width(8.dp))
             Text(
-                if (listId == 0L) "New hunt list" else "Edit list",
+                stringResource(if (listId == 0L) R.string.new_hunt_list else R.string.edit_list),
                 style = MaterialTheme.typography.titleLarge,
             )
         }
@@ -118,7 +120,7 @@ fun ListEditorScreen(
             OutlinedTextField(
                 value = listName,
                 onValueChange = { listName = it },
-                label = { Text("List name") },
+                label = { Text(stringResource(R.string.list_name)) },
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(16.dp))
@@ -129,18 +131,17 @@ fun ListEditorScreen(
             ) {
                 Icon(Icons.Filled.InsertDriveFile, contentDescription = null)
                 Spacer(Modifier.size(8.dp))
-                Text("Import spots from a JSON file")
+                Text(stringResource(R.string.import_from_json))
             }
             Spacer(Modifier.height(4.dp))
             Text(
-                "JSON: an object with a list name and a locations array; each spot has " +
-                    "name, description (optional), lat and lon.",
+                stringResource(R.string.import_json_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             Spacer(Modifier.height(16.dp))
-            Text("Add a spot", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.add_spot_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(8.dp))
 
             Card(
@@ -151,14 +152,14 @@ fun ListEditorScreen(
                     OutlinedTextField(
                         value = spotName,
                         onValueChange = { spotName = it },
-                        label = { Text("Spot name") },
+                        label = { Text(stringResource(R.string.spot_name)) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(8.dp))
                     OutlinedTextField(
                         value = spotDesc,
                         onValueChange = { spotDesc = it },
-                        label = { Text("Description / clue (optional)") },
+                        label = { Text(stringResource(R.string.spot_description)) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(8.dp))
@@ -166,7 +167,7 @@ fun ListEditorScreen(
                         OutlinedTextField(
                             value = spotLat,
                             onValueChange = { spotLat = it },
-                            label = { Text("Latitude") },
+                            label = { Text(stringResource(R.string.latitude)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             modifier = Modifier.weight(1f),
                         )
@@ -174,7 +175,7 @@ fun ListEditorScreen(
                         OutlinedTextField(
                             value = spotLon,
                             onValueChange = { spotLon = it },
-                            label = { Text("Longitude") },
+                            label = { Text(stringResource(R.string.longitude)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             modifier = Modifier.weight(1f),
                         )
@@ -185,11 +186,11 @@ fun ListEditorScreen(
                             val lat = spotLat.toDoubleOrNull()
                             val lon = spotLon.toDoubleOrNull()
                             if (spotName.isBlank()) {
-                                error = "Give the spot a name."
+                                error = context.getString(R.string.error_spot_name)
                             } else if (lat == null || lon == null) {
-                                error = "Latitude and longitude must be numbers."
+                                error = context.getString(R.string.error_coordinates_numbers)
                             } else if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-                                error = "Coordinates out of range (lat -90..90, lon -180..180)."
+                                error = context.getString(R.string.error_coordinates_range)
                             } else {
                                 spots = spots + LocationDraft(spotName.trim(), spotDesc.trim(), lat, lon)
                                 spotName = ""; spotDesc = ""; spotLat = ""; spotLon = ""
@@ -197,14 +198,14 @@ fun ListEditorScreen(
                             }
                         },
                     ) {
-                        Text("Add spot")
+                        Text(stringResource(R.string.add_spot))
                     }
                 }
             }
 
             Spacer(Modifier.height(16.dp))
             Text(
-                spots.size.toString() + " spots in this list",
+                stringResource(R.string.spots_in_list, spots.size),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -242,7 +243,7 @@ fun ListEditorScreen(
                             }) {
                                 Icon(
                                     Icons.Filled.Delete,
-                                    contentDescription = "Remove",
+                                    contentDescription = stringResource(R.string.remove),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
@@ -260,9 +261,9 @@ fun ListEditorScreen(
             Button(
                 onClick = {
                     if (listName.isBlank()) {
-                        error = "Give the list a name."
+                        error = context.getString(R.string.error_list_name)
                     } else if (spots.isEmpty()) {
-                        error = "Add at least one spot."
+                        error = context.getString(R.string.error_add_spot)
                     } else {
                         saving = true
                         viewModel.saveList(listName, spots) { onBack() }
@@ -270,7 +271,7 @@ fun ListEditorScreen(
                 },
                 enabled = !saving,
             ) {
-                Text(if (saving) "Saving…" else "Save list")
+                Text(stringResource(if (saving) R.string.saving else R.string.save_list))
             }
             Spacer(Modifier.height(16.dp))
         }

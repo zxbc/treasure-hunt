@@ -37,6 +37,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -52,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.treasurehunt.app.R
 import com.treasurehunt.app.data.HuntListWithLocations
 import com.treasurehunt.app.hunt.HuntEngine
 import kotlin.math.roundToInt
@@ -98,26 +101,26 @@ private fun InactiveHuntContent(
     ) {
         if (lists.isEmpty()) {
             Text(
-                "No hunt lists yet",
+                stringResource(R.string.hunt_empty_title),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Create a list of spots — by hand or from a JSON file — and the hunt can start.",
+                stringResource(R.string.hunt_empty_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(24.dp))
-            Button(onClick = onOpenLists) { Text("Create a list") }
+            Button(onClick = onOpenLists) { Text(stringResource(R.string.create_list)) }
         } else {
             val rememberedId = HuntEngine.activeListFromPrefs()
             var selected by remember {
                 mutableStateOf(lists.firstOrNull { it.id == rememberedId } ?: lists.first())
             }
             Text(
-                "Pick a hunt to start",
+                stringResource(R.string.pick_hunt),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
@@ -150,8 +153,7 @@ private fun InactiveHuntContent(
 
             Spacer(Modifier.height(8.dp))
             Text(
-                selected.locations.size.toString() + " spots · alert radius " +
-                    radiusM.toString() + " m (change it via ⚙ Settings)",
+                stringResource(R.string.hunt_summary, selected.locations.size, radiusM),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -163,7 +165,7 @@ private fun InactiveHuntContent(
             ) {
                 Icon(Icons.Filled.PlayArrow, contentDescription = null)
                 Spacer(Modifier.size(8.dp))
-                Text("Start hunt")
+                Text(stringResource(R.string.start_hunt))
             }
         }
     }
@@ -171,6 +173,7 @@ private fun InactiveHuntContent(
 
 @Composable
 private fun ActiveHuntContent(viewModel: HuntViewModel, engine: HuntEngine.State) {
+    val context = LocalContext.current
     val nearest = engine.nearest
     val inRange = nearest != null && nearest.distanceM <= engine.radiusM
 
@@ -186,9 +189,9 @@ private fun ActiveHuntContent(viewModel: HuntViewModel, engine: HuntEngine.State
             color = MaterialTheme.colorScheme.onBackground,
         )
         Text(
-            engine.totalLocations.toString() + " spots" +
+            stringResource(R.string.spot_count, engine.totalLocations) +
                 (if (engine.mutedLocations.isNotEmpty())
-                    " · " + engine.mutedLocations.size.toString() + " muted" else ""),
+                    " · " + stringResource(R.string.muted_count, engine.mutedLocations.size) else ""),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -201,22 +204,25 @@ private fun ActiveHuntContent(viewModel: HuntViewModel, engine: HuntEngine.State
         when {
             !engine.hasFix -> {
                 progress = 0f; color = MaterialTheme.colorScheme.outline
-                center = "…"; sub = "Getting location"
+                center = "…"; sub = stringResource(R.string.getting_location)
             }
             nearest == null -> {
                 progress = 0f; color = MaterialTheme.colorScheme.outline
-                center = "—"; sub = "All targets muted"
+                center = "—"; sub = stringResource(R.string.all_targets_muted)
             }
             else -> {
                 if (inRange) {
                     progress = (1f - nearest.ratio).coerceIn(0f, 1f)
                     color = UrgencyPalette[nearest.level]
                     center = formatDistance(nearest.distanceM)
-                    sub = HuntEngine.urgencyLabels[nearest.level]
+                    sub = HuntEngine.urgencyLabel(context, nearest.level)
                 } else {
                     progress = 0f; color = MaterialTheme.colorScheme.outline
                     center = formatDistance(nearest.distanceM)
-                    sub = "outside " + formatDistance(engine.radiusM.toDouble()) + " radius"
+                    sub = stringResource(
+                        R.string.outside_radius,
+                        formatDistance(engine.radiusM.toDouble()),
+                    )
                 }
             }
         }
@@ -240,19 +246,19 @@ private fun ActiveHuntContent(viewModel: HuntViewModel, engine: HuntEngine.State
             ) {
                 Icon(Icons.Filled.VolumeOff, contentDescription = null)
                 Spacer(Modifier.size(6.dp))
-                Text("Mute nearest")
+                Text(stringResource(R.string.mute_nearest))
             }
             Button(onClick = { viewModel.stopHunt() }) {
                 Icon(Icons.Filled.Stop, contentDescription = null)
                 Spacer(Modifier.size(6.dp))
-                Text("Stop")
+                Text(stringResource(R.string.stop))
             }
         }
 
         if (engine.mutedLocations.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             Text(
-                "Muted spots",
+                stringResource(R.string.muted_spots),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -269,7 +275,7 @@ private fun ActiveHuntContent(viewModel: HuntViewModel, engine: HuntEngine.State
                         modifier = Modifier.weight(1f),
                     )
                     OutlinedButton(onClick = { viewModel.unmute(muted.id) }) {
-                        Text("Unmute")
+                        Text(stringResource(R.string.unmute))
                     }
                 }
                 Spacer(Modifier.height(4.dp))

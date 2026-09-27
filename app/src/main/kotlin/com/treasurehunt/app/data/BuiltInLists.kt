@@ -33,7 +33,7 @@ object BuiltInLists {
             scope.launch {
                 try {
                     val text = context.assets.open(asset).bufferedReader().use { it.readText() }
-                    val parsed = JsonImport.parse(text, defaultListName = asset.removeSuffix(".json"))
+                    val parsed = JsonImport.parse(context, text, defaultListName = asset.removeSuffix(".json"))
                     val repo = Repository(HuntDatabase.get(context))
                     repo.insert(parsed.name, parsed.locations)
                 } catch (e: Exception) {

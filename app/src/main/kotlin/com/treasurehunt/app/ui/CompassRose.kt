@@ -33,10 +33,12 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.treasurehunt.app.R
 
 /**
  * A compass rose that points at the nearest active spot of the current hunt.
@@ -143,26 +145,26 @@ fun CompassRose(
         // Cardinal labels, offset inward from the ring.
         val labelRadius = 64.dp
         Text(
-            "N",
+            stringResource(R.string.cardinal_n),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.align(Alignment.Center).offset(y = -labelRadius),
         )
         Text(
-            "E",
+            stringResource(R.string.cardinal_e),
             style = MaterialTheme.typography.labelMedium,
             color = onSurfaceVariant,
             modifier = Modifier.align(Alignment.Center).offset(x = labelRadius),
         )
         Text(
-            "S",
+            stringResource(R.string.cardinal_s),
             style = MaterialTheme.typography.labelMedium,
             color = onSurfaceVariant,
             modifier = Modifier.align(Alignment.Center).offset(y = labelRadius),
         )
         Text(
-            "W",
+            stringResource(R.string.cardinal_w),
             style = MaterialTheme.typography.labelMedium,
             color = onSurfaceVariant,
             modifier = Modifier.align(Alignment.Center).offset(x = -labelRadius),
@@ -173,8 +175,12 @@ fun CompassRose(
 /** Compass caption below the rose: compass direction plus a hint. */
 @Composable
 fun CompassCaption(targetBearing: Float, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
     Text(
-        cardinalDirection(targetBearing) + " · direction to nearest spot",
+        stringResource(
+            R.string.compass_caption,
+            cardinalDirection(context, targetBearing),
+        ),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
@@ -182,11 +188,20 @@ fun CompassCaption(targetBearing: Float, modifier: Modifier = Modifier) {
     )
 }
 
-private val Cardinals = listOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
+private val CardinalRes = intArrayOf(
+    R.string.cardinal_n,
+    R.string.cardinal_ne,
+    R.string.cardinal_e,
+    R.string.cardinal_se,
+    R.string.cardinal_s,
+    R.string.cardinal_sw,
+    R.string.cardinal_w,
+    R.string.cardinal_nw,
+)
 
-private fun cardinalDirection(bearing: Float): String {
+private fun cardinalDirection(context: Context, bearing: Float): String {
     val index = ((bearing + 22.5f) % 360f).toInt() / 45
-    return Cardinals[index.coerceIn(0, Cardinals.size - 1)]
+    return context.getString(CardinalRes[index.coerceIn(0, CardinalRes.size - 1)])
 }
 
 /**

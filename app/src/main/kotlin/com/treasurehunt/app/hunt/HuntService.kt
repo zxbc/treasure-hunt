@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import com.treasurehunt.app.LocalePrefs
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -40,6 +41,10 @@ class HuntService : Service(), LocationListener {
     private lateinit var repo: Repository
     private var scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var wakeLock: PowerManager.WakeLock? = null
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocalePrefs.withLocale(newBase))
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -149,10 +154,10 @@ class HuntService : Service(), LocationListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Hunt alerts",
+                getString(R.string.channel_name),
                 NotificationManager.IMPORTANCE_HIGH,
             ).apply {
-                description = "Shows the active treasure hunt and its current nearest target"
+                description = getString(R.string.channel_description)
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
@@ -176,19 +181,27 @@ class HuntService : Service(), LocationListener {
         var title = ""
         var text = ""
         if (!state.hasFix) {
-            title = "Treasure hunt active"
-            text = "Waiting for a location fix…"
+            title = getString(R.string.hunt_active)
+            text = getString(R.string.waiting_for_fix)
         } else if (nearest == null) {
-            title = "Treasure hunt active"
-            text = "No active targets (all muted)"
+            title = getString(R.string.hunt_active)
+            text = getString(R.string.no_active_targets)
         } else {
             title = nearest.snapshot.name
             val distanceText = formatDistance(nearest.distanceM)
             if (nearest.distanceM <= state.radiusM) {
-                title = HuntEngine.urgencyLabels[nearest.level] + " — " + nearest.snapshot.name
-                text = distanceText + " away — buzzing harder as you get closer"
+                title = getString(
+                    R.string.notification_urgency_title,
+                    HuntEngine.urgencyLabel(this, nearest.level),
+                    nearest.snapshot.name,
+                )
+                text = getString(R.string.notification_in_range, distanceText)
             } else {
-                text = distanceText + " away — outside the " + formatDistance(state.radiusM.toDouble()) + " alert radius"
+                text = getString(
+                    R.string.notification_out_of_range,
+                    distanceText,
+                    formatDistance(state.radiusM.toDouble()),
+                )
             }
         }
 
@@ -198,8 +211,8 @@ class HuntService : Service(), LocationListener {
             .setContentText(text)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
-            .addAction(NotificationCompat.Action.Builder(null, "Mute nearest", mutePending).build())
-            .addAction(NotificationCompat.Action.Builder(null, "Stop hunt", stopPending).build())
+            .addAction(NotificationCompat.Action.Builder(null, getString(R.string.action_mute_nearest), mutePending).build())
+            .addAction(NotificationCompat.Action.Builder(null, getString(R.string.action_stop_hunt), stopPending).build())
             .build()
     }
 

@@ -81,5 +81,5 @@ class HuntViewModel(app: android.app.Application) : AndroidViewModel(app) {
 
     /** Throws HuntImportException when the file cannot be parsed. */
     fun importJson(text: String, defaultName: String): JsonImport.ParsedList =
-        JsonImport.parse(text, defaultName)
+        JsonImport.parse(getApplication(), text, defaultName)
 }

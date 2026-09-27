@@ -1,3 +1,113 @@
 <resources>
     <string name="app_name">Treasure Hunt</string>
+
+    <!-- Navigation and top bar -->
+    <string name="nav_hunt">Hunt</string>
+    <string name="nav_lists">Lists</string>
+    <string name="title_hunt_lists">Hunt Lists</string>
+    <string name="cd_settings">Settings</string>
+
+    <!-- Settings sheet -->
+    <string name="settings_title">Hunt settings</string>
+    <string name="alert_radius">Alert radius</string>
+    <string name="alert_radius_hint">You start buzzing when you are within %1$d m of your closest spot. Buzzing gets more urgent the closer you get.</string>
+    <string name="radius_short">Short radius — alerts only when you are quite close</string>
+    <string name="radius_balanced">Balanced radius</string>
+    <string name="radius_long">Long radius — alerts from far away</string>
+    <string name="language">Language</string>
+    <string name="language_hint">Changes the display language of the whole app.</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+
+    <!-- Lists screen -->
+    <string name="lists_empty_title">No lists saved yet</string>
+    <string name="lists_empty_hint">Use the + button to create your first hunt list.</string>
+    <string name="new_list">New list</string>
+    <string name="delete_list_title">Delete list</string>
+    <string name="delete_list_confirm">Delete %1$s and its %2$d spots? This cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_list">Edit list</string>
+    <string name="spot_count">%1$d spots</string>
+    <string name="muted_count">%1$d muted</string>
+    <string name="stop_hunt">Stop hunt</string>
+    <string name="activate">Activate</string>
+
+    <!-- Hunt screen -->
+    <string name="hunt_empty_title">No hunt lists yet</string>
+    <string name="hunt_empty_hint">Create a list of spots — by hand or from a JSON file — and the hunt can start.</string>
+    <string name="create_list">Create a list</string>
+    <string name="pick_hunt">Pick a hunt to start</string>
+    <string name="hunt_summary">%1$d spots · alert radius %2$d m (change it via ⚙ Settings)</string>
+    <string name="start_hunt">Start hunt</string>
+    <string name="getting_location">Getting location</string>
+    <string name="all_targets_muted">All targets muted</string>
+    <string name="outside_radius">outside %1$s radius</string>
+    <string name="mute_nearest">Mute nearest</string>
+    <string name="stop">Stop</string>
+    <string name="muted_spots">Muted spots</string>
+    <string name="unmute">Unmute</string>
+
+    <!-- Urgency levels, coldest to hottest -->
+    <string name="urgency_cold">COLD</string>
+    <string name="urgency_warm">WARM</string>
+    <string name="urgency_warmer">WARMER</string>
+    <string name="urgency_hot">HOT</string>
+    <string name="urgency_burning">BURNING HOT</string>
+
+    <!-- Compass -->
+    <string name="cardinal_n">N</string>
+    <string name="cardinal_ne">NE</string>
+    <string name="cardinal_e">E</string>
+    <string name="cardinal_se">SE</string>
+    <string name="cardinal_s">S</string>
+    <string name="cardinal_sw">SW</string>
+    <string name="cardinal_w">W</string>
+    <string name="cardinal_nw">NW</string>
+    <string name="compass_caption">%1$s · direction to nearest spot</string>
+
+    <!-- List editor -->
+    <string name="cd_back">Back</string>
+    <string name="new_hunt_list">New hunt list</string>
+    <string name="list_name">List name</string>
+    <string name="import_from_json">Import spots from a JSON file</string>
+    <string name="import_json_hint">JSON: an object with a list name and a locations array; each spot has name, description (optional), lat and lon.</string>
+    <string name="add_spot_title">Add a spot</string>
+    <string name="spot_name">Spot name</string>
+    <string name="spot_description">Description / clue (optional)</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="error_spot_name">Give the spot a name.</string>
+    <string name="error_coordinates_numbers">Latitude and longitude must be numbers.</string>
+    <string name="error_coordinates_range">Coordinates out of range (lat -90..90, lon -180..180).</string>
+    <string name="add_spot">Add spot</string>
+    <string name="spots_in_list">%1$d spots in this list</string>
+    <string name="remove">Remove</string>
+    <string name="error_list_name">Give the list a name.</string>
+    <string name="error_add_spot">Add at least one spot.</string>
+    <string name="saving">Saving…</string>
+    <string name="save_list">Save list</string>
+    <string name="import_failed">Import failed: </string>
+    <string name="import_default_name">Imported hunt</string>
+    <string name="file_read_failed">Could not read the file.</string>
+    <string name="selected_file_read_failed">Could not read the selected file.</string>
+
+    <!-- JSON import errors -->
+    <string name="import_invalid_json">File is not valid JSON.</string>
+    <string name="import_no_locations">No \'locations\' array found in the JSON object.</string>
+    <string name="import_missing_name">Location #%1$d is missing a \'name\'.</string>
+    <string name="import_missing_coordinates">Location #%1$d (\'%2$s\') is missing coordinates.</string>
+    <string name="import_coordinates_out_of_range">Location #%1$d (\'%2$s\') has coordinates out of range.</string>
+
+    <!-- Hunt service notification -->
+    <string name="channel_name">Hunt alerts</string>
+    <string name="channel_description">Shows the active treasure hunt and its current nearest target</string>
+    <string name="hunt_active">Treasure hunt active</string>
+    <string name="waiting_for_fix">Waiting for a location fix…</string>
+    <string name="no_active_targets">No active targets (all muted)</string>
+    <string name="notification_urgency_title">%1$s — %2$s</string>
+    <string name="notification_in_range">%1$s away — buzzing harder as you get closer</string>
+    <string name="notification_out_of_range">%1$s away — outside the %2$s alert radius</string>
+    <string name="action_mute_nearest">Mute nearest</string>
+    <string name="action_stop_hunt">Stop hunt</string>
 </resources>

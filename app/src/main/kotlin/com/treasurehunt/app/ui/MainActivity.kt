@@ -3,6 +3,7 @@
 package com.treasurehunt.app.ui
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -33,16 +34,23 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.treasurehunt.app.LocalePrefs
+import com.treasurehunt.app.R
 import com.treasurehunt.app.data.BuiltInLists
 import com.treasurehunt.app.hunt.HuntEngine
 
 enum class Screen { HUNT, LISTS }
 
 class MainActivity : ComponentActivity() {
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocalePrefs.withLocale(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         HuntEngine.init(this)
@@ -109,17 +117,19 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
         bottomBar = {
             if (!showEditor) {
                 NavigationBar {
+                    val huntLabel = stringResource(R.string.nav_hunt)
+                    val listsLabel = stringResource(R.string.nav_lists)
                     NavigationBarItem(
                         selected = screen == Screen.HUNT,
                         onClick = { screen = Screen.HUNT },
-                        icon = { Icon(Icons.Filled.Map, contentDescription = "Hunt") },
-                        label = { Text("Hunt") },
+                        icon = { Icon(Icons.Filled.Map, contentDescription = huntLabel) },
+                        label = { Text(huntLabel) },
                     )
                     NavigationBarItem(
                         selected = screen == Screen.LISTS,
                         onClick = { screen = Screen.LISTS },
-                        icon = { Icon(Icons.Filled.List, contentDescription = "Lists") },
-                        label = { Text("Lists") },
+                        icon = { Icon(Icons.Filled.List, contentDescription = listsLabel) },
+                        label = { Text(listsLabel) },
                     )
                 }
             }
@@ -155,12 +165,14 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
 @Composable
 private fun HuntTopBar(screen: Screen, onOpenSettings: () -> Unit) {
     androidx.compose.material3.TopAppBar(
-        title = { Text(if (screen == Screen.HUNT) "Treasure Hunt" else "Hunt Lists") },
+        title = {
+            Text(stringResource(if (screen == Screen.HUNT) R.string.app_name else R.string.title_hunt_lists))
+        },
         actions = {
             IconButton(onClick = onOpenSettings) {
                 Icon(
                     Icons.Filled.Settings,
-                    contentDescription = "Settings",
+                    contentDescription = stringResource(R.string.cd_settings),
                     modifier = Modifier.size(24.dp),
                 )
             }

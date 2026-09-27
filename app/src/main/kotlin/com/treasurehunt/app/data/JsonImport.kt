@@ -1,5 +1,7 @@
 package com.treasurehunt.app.data
 
+import android.content.Context
+import com.treasurehunt.app.R
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -32,7 +34,7 @@ object JsonImport {
     private val lonKeys = arrayOf("lon", "lng", "long", "longitude")
     private val coordArrayKeys = arrayOf("coordinates", "coords", "geo", "position", "ll")
 
-    fun parse(text: String, defaultListName: String): ParsedList {
+    fun parse(context: Context, text: String, defaultListName: String): ParsedList {
         var obj: JSONObject? = null
         var arr: JSONArray? = null
         try {
@@ -41,7 +43,7 @@ object JsonImport {
             try {
                 arr = JSONArray(text)
             } catch (e2: Exception) {
-                throw HuntImportException("File is not valid JSON.")
+                throw HuntImportException(context.getString(R.string.import_invalid_json))
             }
         }
 
@@ -54,24 +56,24 @@ object JsonImport {
                     found = true
                     val array = obj.getJSONArray(key)
                     for (i in 0 until array.length()) {
-                        locations += parseLocation(array.getJSONObject(i), i)
+                        locations += parseLocation(context, array.getJSONObject(i), i)
                     }
                 }
             }
-            if (!found) throw HuntImportException("No 'locations' array found in the JSON object.")
+            if (!found) throw HuntImportException(context.getString(R.string.import_no_locations))
             return ParsedList(listName, locations)
         }
 
         val locations = ArrayList<LocationDraft>()
         for (i in 0 until arr!!.length()) {
-            locations += parseLocation(arr.getJSONObject(i), i)
+            locations += parseLocation(context, arr.getJSONObject(i), i)
         }
         return ParsedList(defaultListName, locations)
     }
 
-    private fun parseLocation(obj: JSONObject, index: Int): LocationDraft {
+    private fun parseLocation(context: Context, obj: JSONObject, index: Int): LocationDraft {
         val name = firstString(obj, nameKeys)
-            ?: throw HuntImportException("Location #" + (index + 1) + " is missing a 'name'.")
+            ?: throw HuntImportException(context.getString(R.string.import_missing_name, index + 1))
         val description = firstString(obj, descKeys).orEmpty()
 
         var lat = firstDouble(obj, latKeys)
@@ -89,10 +91,10 @@ object JsonImport {
             }
         }
         if (lat == null || lon == null) {
-            throw HuntImportException("Location #" + (index + 1) + " ('" + name + "') is missing coordinates.")
+            throw HuntImportException(context.getString(R.string.import_missing_coordinates, index + 1, name))
         }
         if (lat < -90.0 || lat > 90.0 || lon < -180.0 || lon > 180.0) {
-            throw HuntImportException("Location #" + (index + 1) + " ('" + name + "') has coordinates out of range.")
+            throw HuntImportException(context.getString(R.string.import_coordinates_out_of_range, index + 1, name))
         }
         return LocationDraft(name.trim(), description.trim(), lat, lon)
     }

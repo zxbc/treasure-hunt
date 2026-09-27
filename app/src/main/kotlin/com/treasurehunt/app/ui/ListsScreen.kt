@@ -34,12 +34,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.treasurehunt.app.LocalePrefs
+import com.treasurehunt.app.R
 import com.treasurehunt.app.data.HuntListWithLocations
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun ListsScreen(
@@ -64,13 +67,13 @@ fun ListsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        "No lists saved yet",
+                        stringResource(R.string.lists_empty_title),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Use the + button to create your first hunt list.",
+                        stringResource(R.string.lists_empty_hint),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -100,7 +103,7 @@ fun ListsScreen(
                 .align(Alignment.BottomEnd)
                 .padding(20.dp),
         ) {
-            Icon(Icons.Filled.Add, contentDescription = "New list")
+            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.new_list))
         }
     }
 
@@ -108,11 +111,14 @@ fun ListsScreen(
     if (toDelete != null) {
         AlertDialog(
             onDismissRequest = { pendingDelete = null },
-            title = { Text("Delete list") },
+            title = { Text(stringResource(R.string.delete_list_title)) },
             text = {
                 Text(
-                    "Delete " + toDelete.name + " and its " +
-                        toDelete.locations.size.toString() + " spots? This cannot be undone.",
+                    stringResource(
+                        R.string.delete_list_confirm,
+                        toDelete.name,
+                        toDelete.locations.size,
+                    ),
                 )
             },
             confirmButton = {
@@ -121,10 +127,10 @@ fun ListsScreen(
                         pendingDelete = null
                         viewModel.deleteList(toDelete) {}
                     },
-                ) { Text("Delete", color = MaterialTheme.colorScheme.error) }
+                ) { Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
-                TextButton(onClick = { pendingDelete = null }) { Text("Cancel") }
+                TextButton(onClick = { pendingDelete = null }) { Text(stringResource(R.string.cancel)) }
             },
         )
     }
@@ -139,6 +145,7 @@ private fun ListRow(
     onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -154,10 +161,11 @@ private fun ListRow(
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        list.locations.size.toString() + " spots" +
+                        stringResource(R.string.spot_count, list.locations.size) +
                             (if (list.locations.any { it.muted })
-                                " · " + list.locations.count { it.muted }.toString() + " muted" else "") +
-                            " · " + SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                                " · " + stringResource(R.string.muted_count, list.locations.count { it.muted })
+                            else "") +
+                            " · " + SimpleDateFormat("MMM d, yyyy", LocalePrefs.locale(context))
                                 .format(Date(list.createdAt)),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -166,14 +174,14 @@ private fun ListRow(
                 IconButton(onClick = onEdit) {
                     Icon(
                         Icons.Filled.Edit,
-                        contentDescription = "Edit list",
+                        contentDescription = stringResource(R.string.edit_list),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Filled.Delete,
-                        contentDescription = "Delete list",
+                        contentDescription = stringResource(R.string.delete_list_title),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -181,7 +189,7 @@ private fun ListRow(
             Spacer(Modifier.height(8.dp))
             if (isActive) {
                 Button(onClick = onStop) {
-                    Text("Stop hunt")
+                    Text(stringResource(R.string.stop_hunt))
                 }
             } else {
                 Button(
@@ -190,7 +198,7 @@ private fun ListRow(
                 ) {
                     Icon(Icons.Filled.PlayArrow, contentDescription = null)
                     Spacer(Modifier.width(6.dp))
-                    Text("Activate")
+                    Text(stringResource(R.string.activate))
                 }
             }
         }
