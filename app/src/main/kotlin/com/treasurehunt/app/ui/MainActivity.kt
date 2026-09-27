@@ -1,0 +1,168 @@
+package com.treasurehunt.app.ui
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.treasurehunt.app.hunt.HuntEngine
+
+enum class Screen { HUNT, LISTS }
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        HuntEngine.init(this)
+        setContent {
+            TreasureHuntTheme {
+                AppRoot()
+            }
+        }
+    }
+}
+
+@Composable
+fun AppRoot(viewModel: HuntViewModel = viewModel()) {
+    val context = LocalContext.current
+    var screen by rememberSaveable { mutableStateOf(Screen.HUNT) }
+    var editorListId by rememberSaveable { mutableStateOf(-1L) } // -1 = editor hidden, 0 = new list
+    var showSettings by rememberSaveable { mutableStateOf(false) }
+    var pendingListId by rememberSaveable { mutableStateOf(0L) }
+
+    val engine by viewModel.engineState.collectAsStateWithLifecycle()
+
+    val locationLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            viewModel.startHunt(pendingListId)
+        }
+    }
+
+    val notificationLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        proceedWithLocationPermission(pendingListId)
+    }
+
+    fun proceedWithLocationPermission(listId: Long) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            viewModel.startHunt(listId)
+        } else {
+            locationLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    fun requestStart(listId: Long) {
+        pendingListId = listId
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            proceedWithLocationPermission(listId)
+        }
+    }
+
+    val showEditor = editorListId != -1L
+
+    Scaffold(
+        topBar = {
+            HuntTopBar(screen, onOpenSettings = { showSettings = true })
+        },
+        bottomBar = {
+            if (!showEditor) {
+                NavigationBar {
+                    NavigationBarItem(
+                        selected = screen == Screen.HUNT,
+                        onClick = { screen = Screen.HUNT },
+                        icon = { Icon(Icons.Filled.Map, contentDescription = "Hunt") },
+                        label = { Text("Hunt") },
+                    )
+                    NavigationBarItem(
+                        selected = screen == Screen.LISTS,
+                        onClick = { screen = Screen.LISTS },
+                        icon = { Icon(Icons.Filled.List, contentDescription = "Lists") },
+                        label = { Text("Lists") },
+                    )
+                }
+            }
+        },
+    ) { padding ->
+        Modifier.padding(padding)
+        when {
+            showEditor -> ListEditorScreen(
+                viewModel = viewModel,
+                listId = editorListId,
+                onBack = { editorListId = -1L },
+            )
+            screen == Screen.LISTS -> ListsScreen(
+                viewModel = viewModel,
+                onOpenEditor = { id -> editorListId = id },
+                onRequestStart = { requestStart(it) },
+            )
+            else -> HuntScreen(
+                viewModel = viewModel,
+                engine = engine,
+                onRequestStart = { requestStart(it) },
+                onOpenLists = { screen = Screen.LISTS },
+            )
+        }
+    }
+
+    if (showSettings) {
+        SettingsSheet(radius = engine.radiusM, onDismiss = { showSettings = false })
+    }
+}
+
+@Composable
+private fun HuntTopBar(screen: Screen, onOpenSettings: () -> Unit) {
+    androidx.compose.material3.TopAppBar(
+        title = { Text(if (screen == Screen.HUNT) "Treasure Hunt" else "Hunt Lists") },
+        actions = {
+            IconButton(onClick = onOpenSettings) {
+                Icon(
+                    Icons.Filled.Settings,
+                    contentDescription = "Settings",
+                    modifier = Modifier.size(24.dp),
+                )
+            }
+        },
+    )
+}

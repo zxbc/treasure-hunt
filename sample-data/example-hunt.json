@@ -1,0 +1,22 @@
+{
+  "name": "Harbor Hunt",
+  "locations": [
+    {
+      "name": "Old Lighthouse",
+      "description": "The first beacon, long dark",
+      "lat": 48.8566,
+      "lon": 2.2919
+    },
+    {
+      "name": "Copper Anchor",
+      "description": "Where the sea keeps its coins",
+      "coordinates": [48.8606, 2.3376]
+    },
+    {
+      "name": "Tidal Gate",
+      "description": "Pass at low water only",
+      "lat": 48.8647,
+      "lon": 2.3574
+    }
+  ]
+}
