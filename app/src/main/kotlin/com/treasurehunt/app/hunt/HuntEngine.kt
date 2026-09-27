@@ -138,7 +138,7 @@ object HuntEngine {
         user.longitude = fix.longitude
 
         var best: LocationSnapshot? = null
-        var bestDistance = Double.MAX_VALUE
+        var bestDistance: Float = Float.MAX_VALUE
         for (candidate in activeLocations) {
             if (candidate.muted) continue
             val target = Location("target")
@@ -154,7 +154,7 @@ object HuntEngine {
         val nearest = best?.let {
             val ratio = (bestDistance / radius).toFloat().coerceIn(0f, 1f)
             val level = (4 - (ratio * 5f).toInt()).coerceIn(0, 4)
-            Nearest(it, bestDistance, ratio, level)
+            Nearest(it, bestDistance.toDouble(), ratio, level)
         }
 
         _state.update {

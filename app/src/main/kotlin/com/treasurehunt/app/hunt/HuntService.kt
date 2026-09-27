@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.location.Location
@@ -14,8 +15,6 @@ import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat
-import androidx.location.location.LocationRequest
 import com.treasurehunt.app.R
 import com.treasurehunt.app.data.HuntDatabase
 import com.treasurehunt.app.data.Repository
@@ -38,7 +37,6 @@ class HuntService : Service(), LocationListener {
 
     private lateinit var locationManager: LocationManager
     private lateinit var notificationManager: NotificationManager
-    private lateinit var locationRequest: LocationRequest
     private lateinit var repo: Repository
     private var scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var wakeLock: PowerManager.WakeLock? = null
@@ -48,13 +46,8 @@ class HuntService : Service(), LocationListener {
         HuntEngine.init(applicationContext)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         notificationManager = getSystemService(NotificationManager::class.java)
-        repo = Repository(HuntDatabase.get(this).dao())
+        repo = Repository(HuntDatabase.get(this))
         createChannel()
-        locationRequest = LocationRequest().apply {
-            interval = 3000
-            fastestInterval = 1000
-            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -108,12 +101,20 @@ class HuntService : Service(), LocationListener {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
             != android.content.pm.PackageManager.PERMISSION_GRANTED
         ) return
-        LocationManagerCompat.requestLocationUpdates(
-            locationManager,
-            locationRequest,
-            this,
-            android.os.Looper.getMainLooper(),
-        )
+        val providers = mutableListOf<String>()
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) providers.add(LocationManager.GPS_PROVIDER)
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) providers.add(LocationManager.NETWORK_PROVIDER)
+        for (provider in providers) {
+            runCatching {
+                locationManager.requestLocationUpdates(
+                    provider,
+                    3000L,
+                    5f,
+                    this,
+                    android.os.Looper.getMainLooper(),
+                )
+            }
+        }
     }
 
     override fun onLocationChanged(location: Location) {
@@ -172,8 +173,8 @@ class HuntService : Service(), LocationListener {
         )
 
         val nearest = state.nearest
-        val title: String
-        val text: String
+        var title = ""
+        var text = ""
         if (!state.hasFix) {
             title = "Treasure hunt active"
             text = "Waiting for a location fix…"
@@ -197,8 +198,8 @@ class HuntService : Service(), LocationListener {
             .setContentText(text)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
-            .addAction(Notification.Action.Builder(null, "Mute nearest", mutePending).build())
-            .addAction(Notification.Action.Builder(null, "Stop hunt", stopPending).build())
+            .addAction(NotificationCompat.Action.Builder(null, "Mute nearest", mutePending).build())
+            .addAction(NotificationCompat.Action.Builder(null, "Stop hunt", stopPending).build())
             .build()
     }
 

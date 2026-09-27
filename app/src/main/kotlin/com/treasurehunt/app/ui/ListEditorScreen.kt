@@ -83,7 +83,9 @@ fun ListEditorScreen(
     ) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
         try {
-            val text = context.contentResolver.openInputStream(uri).use { it.readBytes().toString(Charsets.UTF_8) }
+            val stream = context.contentResolver.openInputStream(uri)
+            val text = stream?.use { it.readBytes().toString(Charsets.UTF_8) }
+                ?: throw HuntImportException("Could not read the selected file.")
             val parsed = viewModel.importJson(text, "Imported hunt")
             if (listName.isBlank()) listName = parsed.name
             spots = spots + parsed.locations
@@ -131,7 +133,8 @@ fun ListEditorScreen(
             }
             Spacer(Modifier.height(4.dp))
             Text(
-                "JSON shape: { "name": "...", "locations": [ { "name", "description", "lat", "lon" } ] }",
+                "JSON: an object with a list name and a locations array; each spot has " +
+                    "name, description (optional), lat and lon.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

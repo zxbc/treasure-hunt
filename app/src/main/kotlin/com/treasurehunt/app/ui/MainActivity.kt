@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.treasurehunt.app.ui
 
 import android.Manifest
@@ -25,8 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -60,43 +63,38 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
 
     val engine by viewModel.engineState.collectAsStateWithLifecycle()
 
-    val locationLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),
     ) { granted ->
-        if (granted) {
-            viewModel.startHunt(pendingListId)
-        }
-    }
-
-    val notificationLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) {
-        proceedWithLocationPermission(pendingListId)
-    }
-
-    fun proceedWithLocationPermission(listId: Long) {
-        if (ContextCompat.checkSelfPermission(
+        val locationOk = granted[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            viewModel.startHunt(listId)
-        } else {
-            locationLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (locationOk) {
+            viewModel.startHunt(pendingListId)
         }
     }
 
     fun requestStart(listId: Long) {
         pendingListId = listId
+        val needed = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            needed.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+        val locationGranted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        if (needed.size == 1 && locationGranted) {
+            viewModel.startHunt(listId)
         } else {
-            proceedWithLocationPermission(listId)
+            permissionLauncher.launch(needed.toTypedArray())
         }
     }
 
@@ -151,6 +149,7 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
     }
 }
 
+@androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
 private fun HuntTopBar(screen: Screen, onOpenSettings: () -> Unit) {
     androidx.compose.material3.TopAppBar(

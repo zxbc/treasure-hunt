@@ -3,7 +3,7 @@ package com.treasurehunt.app.data
 import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Delete
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
@@ -11,6 +11,7 @@ import androidx.room.Query
 import androidx.room.Relation
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "locations")
@@ -30,24 +31,41 @@ data class HuntListEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val createdAt: Long = System.currentTimeMillis(),
+)
+
+/** List with its spots, as observed by the rest of the app. */
+data class HuntListWithLocations(
+    @Embedded val list: HuntListEntity,
 
     @Relation(parentColumn = "id", entityColumn = "listId")
     val locations: List<LocationEntity> = emptyList(),
-)
+) {
+    val id: Long get() = list.id
+    val name: String get() = list.name
+    val createdAt: Long get() = list.createdAt
+}
 
 @Dao
 interface HuntDao {
+    @Transaction
     @Query("SELECT * FROM huntlists ORDER BY createdAt DESC")
-    fun observeLists(): Flow<List<HuntListEntity>>
+    fun observeLists(): Flow<List<HuntListWithLocations>>
 
+    @Transaction
     @Query("SELECT * FROM huntlists WHERE id = :id")
-    suspend fun listById(id: Long): HuntListEntity?
+    suspend fun listById(id: Long): HuntListWithLocations?
 
     @Insert
     suspend fun insertList(list: HuntListEntity): Long
 
-    @Delete
-    suspend fun deleteList(list: HuntListEntity)
+    @Insert
+    suspend fun insertLocations(locations: List<LocationEntity>)
+
+    @Query("DELETE FROM locations WHERE listId = :listId")
+    suspend fun deleteLocationsOf(listId: Long)
+
+    @Query("DELETE FROM huntlists WHERE id = :id")
+    suspend fun deleteListById(id: Long)
 
     @Query("UPDATE locations SET muted = :muted WHERE id = :id")
     suspend fun setLocationMuted(id: Long, muted: Boolean)

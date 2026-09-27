@@ -1,11 +1,12 @@
 package com.treasurehunt.app.ui
 
+import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.treasurehunt.app.data.HuntDatabase
 import com.treasurehunt.app.data.HuntImportException
-import com.treasurehunt.app.data.HuntListEntity
+import com.treasurehunt.app.data.HuntListWithLocations
 import com.treasurehunt.app.data.JsonImport
 import com.treasurehunt.app.data.LocationDraft
 import com.treasurehunt.app.data.Repository
@@ -16,26 +17,27 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HuntViewModel(application: android.app.Application) : androidx.lifecycle.ViewModel() {
+class HuntViewModel(app: android.app.Application) : AndroidViewModel(app) {
 
-    private val repo = Repository(HuntDatabase.get(application).dao())
+    private val db = HuntDatabase.get(getApplication())
+    private val repo = Repository(db)
 
-    val lists: StateFlow<List<HuntListEntity>> = repo.lists
+    val lists: StateFlow<List<HuntListWithLocations>> = repo.lists
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val engineState: StateFlow<HuntEngine.State> = HuntEngine.state
 
     fun startHunt(listId: Long) {
-        val intent = Intent(application, HuntService::class.java)
+        val intent = Intent(getApplication(), HuntService::class.java)
             .putExtra(HuntService.EXTRA_LIST_ID, listId)
-        application.startForegroundService(intent)
+        getApplication<Application>().startForegroundService(intent)
         HuntEngine.saveActiveList(listId)
     }
 
     fun stopHunt() {
-        val intent = Intent(application, HuntService::class.java)
+        val intent = Intent(getApplication(), HuntService::class.java)
             .setAction(HuntService.ACTION_STOP)
-        application.startForegroundService(intent)
+        getApplication<Application>().startForegroundService(intent)
     }
 
     fun muteNearest() {
@@ -63,7 +65,7 @@ class HuntViewModel(application: android.app.Application) : androidx.lifecycle.V
         }
     }
 
-    fun deleteList(list: HuntListEntity, onDone: () -> Unit) {
+    fun deleteList(list: HuntListWithLocations, onDone: () -> Unit) {
         viewModelScope.launch {
             if (HuntEngine.state.value.listId == list.id) stopHunt()
             repo.delete(list)
@@ -71,7 +73,7 @@ class HuntViewModel(application: android.app.Application) : androidx.lifecycle.V
         }
     }
 
-    fun loadList(listId: Long, onLoaded: (HuntListEntity?) -> Unit) {
+    fun loadList(listId: Long, onLoaded: (HuntListWithLocations?) -> Unit) {
         viewModelScope.launch {
             onLoaded(repo.get(listId))
         }

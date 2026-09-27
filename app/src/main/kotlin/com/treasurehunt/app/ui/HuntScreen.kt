@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.treasurehunt.app.ui
 
 import androidx.compose.foundation.Canvas
@@ -47,7 +49,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.treasurehunt.app.data.HuntListEntity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.treasurehunt.app.data.HuntListWithLocations
 import com.treasurehunt.app.hunt.HuntEngine
 import kotlin.math.roundToInt
 
@@ -78,9 +81,10 @@ fun HuntScreen(
     }
 }
 
+@androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
 private fun InactiveHuntContent(
-    lists: List<HuntListEntity>,
+    lists: List<HuntListWithLocations>,
     radiusM: Int,
     onRequestStart: (Long) -> Unit,
     onOpenLists: () -> Unit,

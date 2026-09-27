@@ -33,15 +33,13 @@ object JsonImport {
     private val coordArrayKeys = arrayOf("coordinates", "coords", "geo", "position", "ll")
 
     fun parse(text: String, defaultListName: String): ParsedList {
-        val obj: JSONObject?
-        val arr: JSONArray?
+        var obj: JSONObject? = null
+        var arr: JSONArray? = null
         try {
             obj = JSONObject(text)
-            arr = null
         } catch (e: Exception) {
             try {
                 arr = JSONArray(text)
-                obj = null
             } catch (e2: Exception) {
                 throw HuntImportException("File is not valid JSON.")
             }

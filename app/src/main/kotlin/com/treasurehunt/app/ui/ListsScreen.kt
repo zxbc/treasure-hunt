@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -35,7 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.treasurehunt.app.data.HuntListEntity
+import com.treasurehunt.app.data.HuntListWithLocations
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -48,7 +49,7 @@ fun ListsScreen(
 ) {
     val lists by viewModel.lists.collectAsStateWithLifecycle()
     val engine by viewModel.engineState.collectAsStateWithLifecycle()
-    var pendingDelete by remember { mutableStateOf<HuntListEntity?>(null) }
+    var pendingDelete by remember { mutableStateOf<HuntListWithLocations?>(null) }
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -110,7 +111,7 @@ fun ListsScreen(
             title = { Text("Delete list") },
             text = {
                 Text(
-                    "Delete "" + toDelete.name + "" and its " +
+                    "Delete " + toDelete.name + " and its " +
                         toDelete.locations.size.toString() + " spots? This cannot be undone.",
                 )
             },
@@ -131,7 +132,7 @@ fun ListsScreen(
 
 @Composable
 private fun ListRow(
-    list: HuntListEntity,
+    list: HuntListWithLocations,
     isActive: Boolean,
     onActivate: () -> Unit,
     onStop: () -> Unit,
@@ -188,7 +189,7 @@ private fun ListRow(
                     enabled = list.locations.isNotEmpty(),
                 ) {
                     Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                    Spacer(androidx.compose.foundation.layout.width(6.dp))
+                    Spacer(Modifier.width(6.dp))
                     Text("Activate")
                 }
             }
