@@ -1,0 +1,293 @@
+{
+  "name": "Kolodko Mini Statues — Budapest",
+  "locations": [
+    {
+      "name": "Franz Joseph",
+      "description": "The former Austro-Hungarian emperor lounging in a tiny hammock — a playful nod to the Liberty Bridge, originally named in his honour.",
+      "lat": 47.4857237,
+      "lon": 19.0549035
+    },
+    {
+      "name": "Meerkat",
+      "description": "Commissioned by the Szurikáta Foundation for diabetic children; the meerkat's tiny backpack symbolizes the medical supplies diabetic kids carry.",
+      "lat": 47.4840682,
+      "lon": 19.078151
+    },
+    {
+      "name": "The Axe",
+      "description": "A bronze axe resting on a velvet pillow, a satirical response to the political vandalism that destroyed the original ushanka hat nearby.",
+      "lat": 47.5052496,
+      "lon": 19.0499666
+    },
+    {
+      "name": "Dog Fair in Buda",
+      "description": "A basket of tiny dogs illustrating the famous Hungarian idiom 'Egyszer volt Budán kutyavásár' (There was only one dog fair in Buda).",
+      "lat": 47.5673486,
+      "lon": 19.1179675
+    },
+    {
+      "name": "Jeanne d'Arc (Lisa Simpson)",
+      "description": "Lisa Simpson depicted tied to a stake like Joan of Arc; this recast replacement sits along the Tram 2 line after the original vanished.",
+      "lat": 47.4861167,
+      "lon": 19.0575252
+    },
+    {
+      "name": "Ratatouille (Lecsó) Rat",
+      "description": "A life-sized bronze rat holding a spray can, painting 'lecsó' on a wall — a crossover homage to the Pixar film and the Hungarian stew.",
+      "lat": 47.4906614,
+      "lon": 19.0452623
+    },
+    {
+      "name": "Vuk, the Fox",
+      "description": "The mischievous fox cub from István Fekete's classic, humorously shown holding on to a small bomb in the rock wall of Forrásbarlang.",
+      "lat": 47.489123,
+      "lon": 19.0468777
+    },
+    {
+      "name": "Footprint (Lábnyom)",
+      "description": "A Khanty hunter carrying a deer, perched on a rocky base — a philosophical reflection on humanity's ecological footprint.",
+      "lat": 47.4698571,
+      "lon": 19.0628551
+    },
+    {
+      "name": "Balloon Dog (Libido)",
+      "description": "A balloon-animal dog sniffing at a bone near the Chain Bridge; a cheeky nod to Jeff Koons and Ilona Staller.",
+      "lat": 47.4912747,
+      "lon": 19.0513788
+    },
+    {
+      "name": "Rubik's Cube",
+      "description": "A 27-element tribute to Ernő Rubik's world-famous Hungarian invention, placed across from the Parliament. There is always a solution.",
+      "lat": 47.5068724,
+      "lon": 19.037782
+    },
+    {
+      "name": "Nincs kompót",
+      "description": "A miniature pantry with a tiny working door and an empty jam jar, referencing a catchphrase from the 1965 satirical film.",
+      "lat": 47.4933917,
+      "lon": 19.0441996
+    },
+    {
+      "name": "Rabbit with Checkered Ears",
+      "description": "The iconic 1970s cartoon rabbit peering through binoculars at the funicular's upper station — probably the hardest to miss.",
+      "lat": 47.4975301,
+      "lon": 19.0383265
+    },
+    {
+      "name": "Dead Squirrel",
+      "description": "A tiny squirrel on its back beside a toy gun, a mock crime scene placed right next to Detective Columbo.",
+      "lat": 47.5100331,
+      "lon": 19.0479787
+    },
+    {
+      "name": "Trabant",
+      "description": "A limestone mini Trabant with a wind-up key on its side, honoring the iconic East German people's car.",
+      "lat": 47.5131825,
+      "lon": 19.0477128
+    },
+    {
+      "name": "Paddington & Masha's Bear",
+      "description": "Paddington Bear sitting on the belly of the bear from Masha and the Bear, installed on Christmas Eve — fitting for Bear Street.",
+      "lat": 47.5084392,
+      "lon": 19.0356437
+    },
+    {
+      "name": "Skála Kópé",
+      "description": "The nostalgic 1980s commercial mascot on a modern chair, his glowing red heart on the outside of his chest.",
+      "lat": 47.5105064,
+      "lon": 19.0559456
+    },
+    {
+      "name": "Sad Tank",
+      "description": "A harmless, drooping-barrel toy tank at the former Kossuth Bridge site, commemorating the 1956 Hungarian Revolution.",
+      "lat": 47.512382,
+      "lon": 19.0393056
+    },
+    {
+      "name": "Lunar Roving Vehicle",
+      "description": "Honors Hungarian-American NASA engineer Ferenc Pavlics, who designed the Apollo rover wheels — fittingly on 'Moon Street'.",
+      "lat": 47.5064917,
+      "lon": 19.0521139
+    },
+    {
+      "name": "Ferenc Liszt",
+      "description": "The legendary composer sitting atop his vintage luggage at the airport named after him, unveiled on his 200th birthday.",
+      "lat": 47.435273,
+      "lon": 19.2535106
+    },
+    {
+      "name": "Kermit the Frog",
+      "description": "The beloved Muppet sitting at the base of a green fence; locals often dress him in tiny handmade winter scarves.",
+      "lat": 47.5039606,
+      "lon": 19.0504811
+    },
+    {
+      "name": "Message (Russian Warship)",
+      "description": "A tiny Putin inside a Russian warship on a stone hand, a stark political statement from the Ukrainian-born artist.",
+      "lat": 47.5339213,
+      "lon": 19.0572421
+    },
+    {
+      "name": "Scuba Diver",
+      "description": "An old-fashioned deep-sea diver holding a massive skeleton key, referencing the legend of the New York Café's key thrown to the Danube.",
+      "lat": 47.4989615,
+      "lon": 19.0709236
+    },
+    {
+      "name": "Money Blower",
+      "description": "A worker with a leaf blower scattering pengő banknotes, marking the 1946 hyperinflation and the forint's anniversary.",
+      "lat": 47.5056047,
+      "lon": 19.0520888
+    },
+    {
+      "name": "Leo and Fred",
+      "description": "Leo the lazy circus lion and his trainer Fred resting beside their trailer at the Kopaszi Dam amphitheater steps.",
+      "lat": 47.4664551,
+      "lon": 19.0635139
+    },
+    {
+      "name": "Aranka Néni and Béla Bácsi",
+      "description": "A local elderly couple who ran a beloved flower stall at Pasaréti Square for decades, seated atop a blooming concrete flower.",
+      "lat": 47.5238895,
+      "lon": 18.9932787
+    },
+    {
+      "name": "In Vino Veritas",
+      "description": "A tipsy Roman legionary beside an empty wine jug at the Aquincum amphitheatre; its twin stands in the Colosseum in Pula.",
+      "lat": 47.5328897,
+      "lon": 19.0389614
+    },
+    {
+      "name": "Draft Horses",
+      "description": "Two draft horses pulling a cart of beer barrels, commissioned for the Dreher Brewery's anniversary.",
+      "lat": 47.4885545,
+      "lon": 19.147326
+    },
+    {
+      "name": "Antal Dreher",
+      "description": "The brewery founder atop a wooden beer barrel leaning on a walking stick, inside the Dreher Brewery courtyard.",
+      "lat": 47.4885545,
+      "lon": 19.147326
+    },
+    {
+      "name": "Hanna Szenes",
+      "description": "The WWII Jewish poet and British paratrooper taking a leap of faith over a limestone map of Hungary, in the park named for her.",
+      "lat": 47.505732,
+      "lon": 19.0720544
+    },
+    {
+      "name": "Rezső Seress",
+      "description": "The composer of 'Gloomy Sunday', who spent decades playing piano at this very restaurant on Akácfa Street.",
+      "lat": 47.4998031,
+      "lon": 19.0656598
+    },
+    {
+      "name": "Noah's Ark",
+      "description": "A miniature ark on a stone pillar near the Veterinary University; peek through its tiny windows to spot a painted rainbow.",
+      "lat": 47.5036828,
+      "lon": 19.0791984
+    },
+    {
+      "name": "Fourteen Carat Car",
+      "description": "A bronze Alfa Romeo honoring pulp-fiction writer Jenő Rejtő and his novel 'The Fourteen-Carat Car', near the author's birthplace.",
+      "lat": 47.5033042,
+      "lon": 19.072791
+    },
+    {
+      "name": "Theodor Herzl",
+      "description": "The father of modern political Zionism sitting on a bicycle, right by the Dohány Street Synagogue near his birthplace.",
+      "lat": 47.4961024,
+      "lon": 19.0608682
+    },
+    {
+      "name": "Mekk Elek",
+      "description": "The bumbling handyman goat from Hungarian puppet animation, holding a plaque referencing 'Moscow Square', the former name of the hub.",
+      "lat": 47.506895,
+      "lon": 19.0245598
+    },
+    {
+      "name": "Winnie the Pooh",
+      "description": "The honey-loving bear reaching upward, on the facade of Frigyes Karinthy's birthplace — who named the bear after his sister's nickname.",
+      "lat": 47.5075944,
+      "lon": 19.0786835
+    },
+    {
+      "name": "Chief Worm",
+      "description": "Kolodko's very first mini-sculpture in Hungary — the cheerful fishing bait from The Great Ho-Ho Angler — with a great Danube view.",
+      "lat": 47.512382,
+      "lon": 19.0393056
+    },
+    {
+      "name": "Miksa Róth",
+      "description": "A rare indoor piece showing Hungary's master stained-glass and mosaic artist holding a delicate glass pane, in his memorial house.",
+      "lat": 47.50344,
+      "lon": 19.08118
+    },
+    {
+      "name": "Harry Houdini",
+      "description": "A rare indoor sculpture in the K11 Cultural Center lobby commemorating the illusionist's birthplace in Budapest.",
+      "lat": 47.4988714,
+      "lon": 19.0579473
+    },
+    {
+      "name": "Headphones",
+      "description": "A functional pair of miniature bronze headphones outside Müpa that quietly plays classical music when you lean in.",
+      "lat": 47.4696439,
+      "lon": 19.0716319
+    },
+    {
+      "name": "Empire (Queen Elizabeth II)",
+      "description": "The queen in her hat and handbag atop a Yellow Submarine, in Millenáris Park — a nod to the Beatles' MBE moment.",
+      "lat": 47.5113886,
+      "lon": 19.0249063
+    },
+    {
+      "name": "Garfield",
+      "description": "A colorful, painted Garfield on the Veterinary University's brick fence, created for the cat's 45th birthday.",
+      "lat": 47.5037959,
+      "lon": 19.0773704
+    },
+    {
+      "name": "Piszkos Fred (Dirty Fred)",
+      "description": "Jenő Rejtő's slippery pulp-fiction adventurer beside a ship's chest, next to the Hungarian Academy of Sciences.",
+      "lat": 47.507181,
+      "lon": 19.0449126
+    },
+    {
+      "name": "Tied-Up Chuck Norris",
+      "description": "The action hero tied up on the Megyeri Bridge, a nod to the 2006 internet vote to name it the 'Chuck Norris Bridge'.",
+      "lat": 47.6054637,
+      "lon": 19.0960228
+    },
+    {
+      "name": "Lucky Saint Nicholas",
+      "description": "A miniature Saint Nicholas designed to bring good luck, tucked inside the Erzsébetligeti Theatre foyer.",
+      "lat": 47.5110386,
+      "lon": 19.2028958
+    },
+    {
+      "name": "Yoda",
+      "description": "The wise Jedi Master in deep contemplation, perched on the handrail at the top of the escalators in Szent Gellért Square M4.",
+      "lat": 47.4829719,
+      "lon": 19.0546371
+    },
+    {
+      "name": "Pinocchio",
+      "description": "Pinocchio with a remarkably long wooden nose, unveiled near the Hungarian Academy of Sciences / Vigadó embankment.",
+      "lat": 47.4953713,
+      "lon": 19.0490499
+    },
+    {
+      "name": "Dr. Bubó & the Nervous Rabbit",
+      "description": "Dr. Bubó the owl-doctor and his anxious rabbit patient 'opened a clinic' on the Bethesda Children's Hospital fence.",
+      "lat": 47.5119108,
+      "lon": 19.0955531
+    },
+    {
+      "name": "Vilmos Zsigmondy",
+      "description": "The 19th-century mining engineer who drilled the City Park artesian well feeding the Széchenyi Bath, shown relaxing.",
+      "lat": 47.5184354,
+      "lon": 19.0825223
+    }
+  ]
+}

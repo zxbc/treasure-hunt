@@ -6,6 +6,7 @@ An Android app that turns a list of named locations into a proximity "hotter or 
 
 - **Hunt lists** — each list is a saved set of spots (name, description/clue, latitude, longitude), stored in a Room database.
 - **JSON import** — create or extend a list from a JSON file via the system file picker (see format below). Spots can also be entered by hand.
+- **Built-in list** — the Kolodko mini statues of Budapest (48 spots, bundled as `app/src/main/assets/kolodko-mini-statues.json`) are imported automatically on first launch, so you can start hunting without importing anything. Deleting the list keeps it deleted; the app remembers it was already imported.
 - **Proximity buzzing** — a foreground location service tracks you and buzzes (vibration only, no sound) whenever you're within the alert radius of your closest *unmuted* spot. If several spots are in range, the closest one wins.
 - **Urgency scaling** — buzz pulses get longer, more frequent and more numerous as you close in (COLD → WARM → WARMER → HOT → BURNING HOT). The main screen shows a live gauge with distance.
 - **Per-spot muting** — "Mute nearest" silences the currently closest spot (persisted per list); mute it again later from the hunt screen. You can also stop the whole hunt.
@@ -48,6 +49,7 @@ Or open the project in Android Studio (Hedgehog or newer) and hit Run.
 
 ## Project layout
 
-- `app/src/main/kotlin/com/treasurehunt/app/data/` — Room entities/DAO, repository, JSON parser
+- `app/src/main/kotlin/com/treasurehunt/app/data/` — Room entities/DAO, repository, JSON parser, built-in list import
+- `app/src/main/assets/` — hunt lists bundled with the APK (imported automatically on first launch)
 - `app/src/main/kotlin/com/treasurehunt/app/hunt/` — `HuntEngine` (state, nearest-spot math, buzz patterns) and `HuntService` (foreground location service)
 - `app/src/main/kotlin/com/treasurehunt/app/ui/` — Compose screens: hunt gauge, lists, editor, settings

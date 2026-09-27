@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.treasurehunt.app.data.BuiltInLists
 import com.treasurehunt.app.hunt.HuntEngine
 
 enum class Screen { HUNT, LISTS }
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         HuntEngine.init(this)
+        BuiltInLists.importAllIfNeeded(this)
         setContent {
             TreasureHuntTheme {
                 AppRoot()
