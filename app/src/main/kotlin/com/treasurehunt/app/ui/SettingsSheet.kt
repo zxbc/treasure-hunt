@@ -1,17 +1,19 @@
 package com.treasurehunt.app.ui
 
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.treasurehunt.app.LocalePrefs
 import com.treasurehunt.app.R
+import com.treasurehunt.app.data.BuiltInLists
 import com.treasurehunt.app.hunt.HuntEngine
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +35,6 @@ import com.treasurehunt.app.hunt.HuntEngine
 fun SettingsSheet(radius: Int, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val currentLanguage = LocalePrefs.current(context)
-    var menuExpanded by remember { mutableStateOf(false) }
 
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
@@ -77,34 +79,34 @@ fun SettingsSheet(radius: Int, onDismiss: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(8.dp))
-            MenuSelectField(
-                label = stringResource(R.string.language),
-                value = stringResource(
-                    if (currentLanguage == LocalePrefs.TAG_CHINESE)
-                        R.string.language_chinese
-                    else R.string.language_english,
-                ),
-                expanded = menuExpanded,
-                onOpen = { menuExpanded = true },
-            )
-            DropdownMenu(
-                expanded = menuExpanded,
-                onDismissRequest = { menuExpanded = false },
+            // Inline buttons instead of a dropdown: a DropdownMenu anchored
+            // inside a ModalBottomSheet mispositions (it pops up at the
+            // sheet's top-left), and with two options the choice is clearer
+            // when both are always visible — the current one is filled.
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.language_english)) },
-                    onClick = {
-                        menuExpanded = false
-                        selectLanguage(LocalePrefs.TAG_ENGLISH, context)
-                    },
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.language_chinese)) },
-                    onClick = {
-                        menuExpanded = false
-                        selectLanguage(LocalePrefs.TAG_CHINESE, context)
-                    },
-                )
+                if (currentLanguage == LocalePrefs.TAG_ENGLISH) {
+                    Button(onClick = {}, modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.language_english))
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = { selectLanguage(LocalePrefs.TAG_ENGLISH, context) },
+                        modifier = Modifier.weight(1f),
+                    ) { Text(stringResource(R.string.language_english)) }
+                }
+                if (currentLanguage == LocalePrefs.TAG_CHINESE) {
+                    Button(onClick = {}, modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.language_chinese))
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = { selectLanguage(LocalePrefs.TAG_CHINESE, context) },
+                        modifier = Modifier.weight(1f),
+                    ) { Text(stringResource(R.string.language_chinese)) }
+                }
             }
         }
     }
@@ -113,6 +115,8 @@ fun SettingsSheet(radius: Int, onDismiss: () -> Unit) {
 private fun selectLanguage(tag: String, context: android.content.Context) {
     if (tag == LocalePrefs.current(context)) return
     LocalePrefs.set(context, tag)
+    // Load the bundled hunt list in the new language as the default.
+    BuiltInLists.applyLanguageDefault(context)
     // Recreate so the new locale takes effect in attachBaseContext.
     (context as? ComponentActivity)?.recreate()
 }

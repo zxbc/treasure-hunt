@@ -1,291 +1,291 @@
 {
-  "name": "科尔杜科迷你雕像 — 布达佩斯",
+  "name": "Kolodko Mini Statues — Budapest",
   "locations": [
     {
-      "name": "弗朗茨·约瑟夫",
-      "description": "前奥匈帝国皇帝悠闲地躺在一张小吊床上——向原以他命名的自由桥俏皮致敬。",
+      "name": "Franz Joseph",
+      "description": "The former Austro-Hungarian emperor lounging in a tiny hammock — a playful nod to the Liberty Bridge, originally named in his honour.",
       "lat": 47.4857237,
       "lon": 19.0549035
     },
     {
-      "name": "狐獴",
-      "description": "由Szurikáta基金会为糖尿病患儿委托制作；小狐獴的迷你背包象征着糖尿病儿童随身携带的医疗用品。",
+      "name": "Meerkat",
+      "description": "Commissioned by the Szurikáta Foundation for diabetic children; the meerkat's tiny backpack symbolizes the medical supplies diabetic kids carry.",
       "lat": 47.4840682,
       "lon": 19.078151
     },
     {
-      "name": "斧头",
-      "description": "一把青铜斧头安放在天鹅绒枕头上，以讽刺的方式回应了附近曾摧毁原版乌香卡棉帽的政治破坏行为。",
+      "name": "The Axe",
+      "description": "A bronze axe resting on a velvet pillow, a satirical response to the political vandalism that destroyed the original ushanka hat nearby.",
       "lat": 47.5052496,
       "lon": 19.0499666
     },
     {
-      "name": "布达的狗市",
-      "description": "一篮子小狗，表现匈牙利著名谚语「Egyszer volt Budán kutyavásár」（布达曾经只有一个狗市）。",
+      "name": "Dog Fair in Buda",
+      "description": "A basket of tiny dogs illustrating the famous Hungarian idiom 'Egyszer volt Budán kutyavásár' (There was only one dog fair in Buda).",
       "lat": 47.5673486,
       "lon": 19.1179675
     },
     {
-      "name": "圣女贞德（丽莎·辛普森）",
-      "description": "丽莎·辛普森像圣女贞德一样被绑在火刑柱上；原作消失后，这座替换雕像沿2路电车线安放。",
+      "name": "Jeanne d'Arc (Lisa Simpson)",
+      "description": "Lisa Simpson depicted tied to a stake like Joan of Arc; this recast replacement sits along the Tram 2 line after the original vanished.",
       "lat": 47.4861167,
       "lon": 19.0575252
     },
     {
-      "name": "《美食总动员》老鼠（Lecsó 炖菜）",
-      "description": "一只真人大小的青铜老鼠拿着喷漆罐，在墙上喷涂「lecsó」——向皮克斯电影和匈牙利炖菜的跨界致敬。",
+      "name": "Ratatouille (Lecsó) Rat",
+      "description": "A life-sized bronze rat holding a spray can, painting 'lecsó' on a wall — a crossover homage to the Pixar film and the Hungarian stew.",
       "lat": 47.4906614,
       "lon": 19.0452623
     },
     {
-      "name": "小狐狸 Vuk",
-      "description": "出自伊什特万·费凯泰经典作品的顽皮小狐狸，幽默地抱着一颗小炸弹，位于 Forrásbarlang 的岩壁上。",
+      "name": "Vuk, the Fox",
+      "description": "The mischievous fox cub from István Fekete's classic, humorously shown holding on to a small bomb in the rock wall of Forrásbarlang.",
       "lat": 47.489123,
       "lon": 19.0468777
     },
     {
-      "name": "足迹（Lábnyom）",
-      "description": "一位汉特族猎人扛着一头鹿，立于岩石基座之上——对人类生态足迹的哲学思考。",
+      "name": "Footprint (Lábnyom)",
+      "description": "A Khanty hunter carrying a deer, perched on a rocky base — a philosophical reflection on humanity's ecological footprint.",
       "lat": 47.4698571,
       "lon": 19.0628551
     },
     {
-      "name": "气球狗（Libido）",
-      "description": "一只气球造型的小狗在链子桥附近嗅着一根骨头；对杰夫·昆斯和伊洛娜·斯达勒的俏皮致敬。",
+      "name": "Balloon Dog (Libido)",
+      "description": "A balloon-animal dog sniffing at a bone near the Chain Bridge; a cheeky nod to Jeff Koons and Ilona Staller.",
       "lat": 47.4912747,
       "lon": 19.0513788
     },
     {
-      "name": "魔方",
-      "description": "由27块拼成的魔方，致敬厄尔诺·鲁比克举世闻名的匈牙利发明，安放在国会大厦对面。总有解法。",
+      "name": "Rubik's Cube",
+      "description": "A 27-element tribute to Ernő Rubik's world-famous Hungarian invention, placed across from the Parliament. There is always a solution.",
       "lat": 47.5068724,
       "lon": 19.037782
     },
     {
-      "name": "「没有果酱」（Nincs kompót）",
-      "description": "迷你小食品柜，带一扇可以打开的小门和一个空果酱罐，致敬1965年讽刺电影里的口头禅。",
+      "name": "Nincs kompót",
+      "description": "A miniature pantry with a tiny working door and an empty jam jar, referencing a catchphrase from the 1965 satirical film.",
       "lat": 47.4933917,
       "lon": 19.0441996
     },
     {
-      "name": "格子耳朵兔",
-      "description": "标志性的1970年代动画兔子，正用双筒望远镜望着缆车的上站——大概是最不容易错过的一座。",
+      "name": "Rabbit with Checkered Ears",
+      "description": "The iconic 1970s cartoon rabbit peering through binoculars at the funicular's upper station — probably the hardest to miss.",
       "lat": 47.4975301,
       "lon": 19.0383265
     },
     {
-      "name": "死松鼠",
-      "description": "一只仰躺着的小松鼠，身旁放着一把玩具枪，模拟犯罪现场，就安放在侦探科伦博旁边。",
+      "name": "Dead Squirrel",
+      "description": "A tiny squirrel on its back beside a toy gun, a mock crime scene placed right next to Detective Columbo.",
       "lat": 47.5100331,
       "lon": 19.0479787
     },
     {
-      "name": "特拉贝特轿车（Trabant）",
-      "description": "一座石灰岩迷你特拉贝特车，侧面带着发条钥匙，致敬标志性的东德国民车。",
+      "name": "Trabant",
+      "description": "A limestone mini Trabant with a wind-up key on its side, honoring the iconic East German people's car.",
       "lat": 47.5131825,
       "lon": 19.0477128
     },
     {
-      "name": "帕丁顿熊与玛莎的大熊",
-      "description": "帕丁顿熊坐在《玛莎和熊》里大熊的肚子上，于平安夜安装——正合「熊街」之名。",
+      "name": "Paddington & Masha's Bear",
+      "description": "Paddington Bear sitting on the belly of the bear from Masha and the Bear, installed on Christmas Eve — fitting for Bear Street.",
       "lat": 47.5084392,
       "lon": 19.0356437
     },
     {
-      "name": "老山羊 Kópé（Skála Kópé）",
-      "description": "怀旧的1980年代广告吉祥物坐在现代椅子上，胸口外侧挂着发光的红心。",
+      "name": "Skála Kópé",
+      "description": "The nostalgic 1980s commercial mascot on a modern chair, his glowing red heart on the outside of his chest.",
       "lat": 47.5105064,
       "lon": 19.0559456
     },
     {
-      "name": "悲伤的坦克",
-      "description": "一座无害的、炮管低垂的玩具坦克，位于原科苏特桥遗址，纪念1956年匈牙利革命。",
+      "name": "Sad Tank",
+      "description": "A harmless, drooping-barrel toy tank at the former Kossuth Bridge site, commemorating the 1956 Hungarian Revolution.",
       "lat": 47.512382,
       "lon": 19.0393056
     },
     {
-      "name": "月球巡视车",
-      "description": "致敬匈牙利裔美国 NASA 工程师费伦茨·帕夫里奇——他设计了阿波罗月球车的车轮，恰好在「月球街」上。",
+      "name": "Lunar Roving Vehicle",
+      "description": "Honors Hungarian-American NASA engineer Ferenc Pavlics, who designed the Apollo rover wheels — fittingly on 'Moon Street'.",
       "lat": 47.5064917,
       "lon": 19.0521139
     },
     {
-      "name": "弗朗茨·李斯特",
-      "description": "传奇作曲家坐在他的老式行李箱上，位于以他命名的机场，于其200岁生日揭幕。",
+      "name": "Ferenc Liszt",
+      "description": "The legendary composer sitting atop his vintage luggage at the airport named after him, unveiled on his 200th birthday.",
       "lat": 47.435273,
       "lon": 19.2535106
     },
     {
-      "name": "科米特蛙",
-      "description": "深受喜爱的布偶蛙坐在绿色围栏的底部；当地人常给它系上手工编织的小围巾。",
+      "name": "Kermit the Frog",
+      "description": "The beloved Muppet sitting at the base of a green fence; locals often dress him in tiny handmade winter scarves.",
       "lat": 47.5039606,
       "lon": 19.0504811
     },
     {
-      "name": "「信息」（俄国军舰）",
-      "description": "石手托着一艘俄国军舰，里面藏着小小的普京——乌克兰裔艺术家发出的强烈政治宣言。",
+      "name": "Message (Russian Warship)",
+      "description": "A tiny Putin inside a Russian warship on a stone hand, a stark political statement from the Ukrainian-born artist.",
       "lat": 47.5339213,
       "lon": 19.0572421
     },
     {
-      "name": "潜水员",
-      "description": "一位老式深海潜水员握着一把巨大的万能钥匙，致敬纽约咖啡馆的钥匙被抛入多瑙河的传说。",
+      "name": "Scuba Diver",
+      "description": "An old-fashioned deep-sea diver holding a massive skeleton key, referencing the legend of the New York Café's key thrown to the Danube.",
       "lat": 47.4989615,
       "lon": 19.0709236
     },
     {
-      "name": "吹钱者",
-      "description": "一名工人用吹叶机吹散彭尧纸币，纪念1946年恶性通货膨胀和福林货币的周年纪念。",
+      "name": "Money Blower",
+      "description": "A worker with a leaf blower scattering pengő banknotes, marking the 1946 hyperinflation and the forint's anniversary.",
       "lat": 47.5056047,
       "lon": 19.0520888
     },
     {
-      "name": "利奥和弗雷德",
-      "description": "懒洋洋的马戏团狮子利奥和驯兽师弗雷德，在科帕奇大坝露天剧场台阶旁的小拖车边休息。",
+      "name": "Leo and Fred",
+      "description": "Leo the lazy circus lion and his trainer Fred resting beside their trailer at the Kopaszi Dam amphitheater steps.",
       "lat": 47.4664551,
       "lon": 19.0635139
     },
     {
-      "name": "阿兰卡阿姨和贝拉叔叔",
-      "description": "一对当地老夫妻，在帕沙雷蒂广场经营了数十年的受欢迎的花摊，坐在一朵盛开的混凝土花上。",
+      "name": "Aranka Néni and Béla Bácsi",
+      "description": "A local elderly couple who ran a beloved flower stall at Pasaréti Square for decades, seated atop a blooming concrete flower.",
       "lat": 47.5238895,
       "lon": 18.9932787
     },
     {
-      "name": "「酒中吐真言」",
-      "description": "一名微醺的罗马军团士兵身旁放着空酒壶，位于阿昆库姆露天剧场；它的孪生雕像在普拉的斗兽场。",
+      "name": "In Vino Veritas",
+      "description": "A tipsy Roman legionary beside an empty wine jug at the Aquincum amphitheatre; its twin stands in the Colosseum in Pula.",
       "lat": 47.5328897,
       "lon": 19.0389614
     },
     {
-      "name": "挽马",
-      "description": "两匹挽马拉着一车啤酒桶，为德瑞啤酒厂的周年庆典委托制作。",
+      "name": "Draft Horses",
+      "description": "Two draft horses pulling a cart of beer barrels, commissioned for the Dreher Brewery's anniversary.",
       "lat": 47.4885545,
       "lon": 19.147326
     },
     {
-      "name": "安塔尔·德瑞",
-      "description": "啤酒厂创始人坐在一桶倾斜的木啤酒桶上，拄着拐杖，位于德瑞啤酒厂庭院内。",
+      "name": "Antal Dreher",
+      "description": "The brewery founder atop a wooden beer barrel leaning on a walking stick, inside the Dreher Brewery courtyard.",
       "lat": 47.4885545,
       "lon": 19.147326
     },
     {
-      "name": "汉娜·塞涅什",
-      "description": "二战时期的犹太诗人、英国空降兵，在石灰岩匈牙利地图上纵身一跃——位于以她命名的公园里。",
+      "name": "Hanna Szenes",
+      "description": "The WWII Jewish poet and British paratrooper taking a leap of faith over a limestone map of Hungary, in the park named for her.",
       "lat": 47.505732,
       "lon": 19.0720544
     },
     {
-      "name": "雷佐·谢列什",
-      "description": "《忧郁的星期天》的作曲家，曾在阿卡奇法街这家餐厅弹了数十年钢琴。",
+      "name": "Rezső Seress",
+      "description": "The composer of 'Gloomy Sunday', who spent decades playing piano at this very restaurant on Akácfa Street.",
       "lat": 47.4998031,
       "lon": 19.0656598
     },
     {
-      "name": "诺亚方舟",
-      "description": "兽医大学附近石柱上的迷你方舟；透过小窗可以望见一幅彩虹。",
+      "name": "Noah's Ark",
+      "description": "A miniature ark on a stone pillar near the Veterinary University; peek through its tiny windows to spot a painted rainbow.",
       "lat": 47.5036828,
       "lon": 19.0791984
     },
     {
-      "name": "十四K金轿车",
-      "description": "一辆青铜阿尔法·罗密欧轿车，致敬通俗小说作家若诺·雷约及其小说《十四K金轿车》，位于作者出生地附近。",
+      "name": "Fourteen Carat Car",
+      "description": "A bronze Alfa Romeo honoring pulp-fiction writer Jenő Rejtő and his novel 'The Fourteen-Carat Car', near the author's birthplace.",
       "lat": 47.5033042,
       "lon": 19.072791
     },
     {
-      "name": "西奥多·赫茨尔",
-      "description": "现代政治锡安主义之父骑着自行车，就在多哈尼街会堂旁、他的出生地附近。",
+      "name": "Theodor Herzl",
+      "description": "The father of modern political Zionism sitting on a bicycle, right by the Dohány Street Synagogue near his birthplace.",
       "lat": 47.4961024,
       "lon": 19.0608682
     },
     {
-      "name": "「大力」埃莱克（Mekk Elek）",
-      "description": "匈牙利木偶动画里笨手笨脚的修理工山羊，手持一块铭牌，致敬该交通枢纽的旧名「莫斯科广场」。",
+      "name": "Mekk Elek",
+      "description": "The bumbling handyman goat from Hungarian puppet animation, holding a plaque referencing 'Moscow Square', the former name of the hub.",
       "lat": 47.506895,
       "lon": 19.0245598
     },
     {
-      "name": "小熊维尼",
-      "description": "爱吃蜂蜜的维尼向上伸展，位于弗里杰什·卡林西出生地的外墙上——正是他用妹妹的小名为维尼命名。",
+      "name": "Winnie the Pooh",
+      "description": "The honey-loving bear reaching upward, on the facade of Frigyes Karinthy's birthplace — who named the bear after his sister's nickname.",
       "lat": 47.5075944,
       "lon": 19.0786835
     },
     {
-      "name": "鱼虫老大",
-      "description": "科尔杜科在匈牙利的第一座迷你雕塑——动画片《大钓鱼》里欢快的鱼饵，还能俯瞰多瑙河美景。",
+      "name": "Chief Worm",
+      "description": "Kolodko's very first mini-sculpture in Hungary — the cheerful fishing bait from The Great Ho-Ho Angler — with a great Danube view.",
       "lat": 47.512382,
       "lon": 19.0393056
     },
     {
-      "name": "米克沙·罗特",
-      "description": "罕见的室内作品，展示匈牙利彩绘玻璃与马赛克艺术大师手持一块精致的玻璃，位于他的纪念故居。",
+      "name": "Miksa Róth",
+      "description": "A rare indoor piece showing Hungary's master stained-glass and mosaic artist holding a delicate glass pane, in his memorial house.",
       "lat": 47.50344,
       "lon": 19.08118
     },
     {
-      "name": "哈里·胡迪尼",
-      "description": "罕见的室内雕塑，位于 K11 文化中心大厅，纪念魔术师胡迪尼在布达佩斯的出生地。",
+      "name": "Harry Houdini",
+      "description": "A rare indoor sculpture in the K11 Cultural Center lobby commemorating the illusionist's birthplace in Budapest.",
       "lat": 47.4988714,
       "lon": 19.0579473
     },
     {
-      "name": "耳机",
-      "description": "Müpa 外一副功能齐全的小型青铜耳机，凑近时会静静播放古典音乐。",
+      "name": "Headphones",
+      "description": "A functional pair of miniature bronze headphones outside Müpa that quietly plays classical music when you lean in.",
       "lat": 47.4696439,
       "lon": 19.0716319
     },
     {
-      "name": "「帝国」（伊丽莎白二世女王）",
-      "description": "女王戴着帽子、挎着手提包，坐在黄色潜水艇上，位于千禧公园——向披头士乐队获 MBE 勋位的时刻致敬。",
+      "name": "Empire (Queen Elizabeth II)",
+      "description": "The queen in her hat and handbag atop a Yellow Submarine, in Millenáris Park — a nod to the Beatles' MBE moment.",
       "lat": 47.5113886,
       "lon": 19.0249063
     },
     {
-      "name": "加菲猫",
-      "description": "兽医大学砖墙上色彩鲜艳的彩绘加菲猫，为庆祝这只猫45岁生日而创作。",
+      "name": "Garfield",
+      "description": "A colorful, painted Garfield on the Veterinary University's brick fence, created for the cat's 45th birthday.",
       "lat": 47.5037959,
       "lon": 19.0773704
     },
     {
-      "name": "皮什科什·弗雷德（Dirty Fred）",
-      "description": "若诺·雷约笔下圆滑的通俗小说冒险家，身旁放着一只船舱木箱，位于匈牙利科学院旁。",
+      "name": "Piszkos Fred (Dirty Fred)",
+      "description": "Jenő Rejtő's slippery pulp-fiction adventurer beside a ship's chest, next to the Hungarian Academy of Sciences.",
       "lat": 47.507181,
       "lon": 19.0449126
     },
     {
-      "name": "被绑住的查克·诺里斯",
-      "description": "动作英雄被绑在梅杰里桥上，致敬2006年互联网投票将该桥命名为「查克·诺里斯桥」。",
+      "name": "Tied-Up Chuck Norris",
+      "description": "The action hero tied up on the Megyeri Bridge, a nod to the 2006 internet vote to name it the 'Chuck Norris Bridge'.",
       "lat": 47.6054637,
       "lon": 19.0960228
     },
     {
-      "name": "幸运圣尼古拉",
-      "description": "一尊为带来好运而设计的迷你圣尼古拉像，藏在伊丽莎白公园剧院的门厅里。",
+      "name": "Lucky Saint Nicholas",
+      "description": "A miniature Saint Nicholas designed to bring good luck, tucked inside the Erzsébetligeti Theatre foyer.",
       "lat": 47.5110386,
       "lon": 19.2028958
     },
     {
-      "name": "尤达大师",
-      "description": "沉思中的绝地大师，位于圣盖勒特广场 M4 地铁站扶梯顶部的栏杆上。",
+      "name": "Yoda",
+      "description": "The wise Jedi Master in deep contemplation, perched on the handrail at the top of the escalators in Szent Gellért Square M4.",
       "lat": 47.4829719,
       "lon": 19.0546371
     },
     {
-      "name": "匹诺曹",
-      "description": "鼻子长得惊人的匹诺曹木偶，在匈牙利科学院／维加多河堤附近揭幕。",
+      "name": "Pinocchio",
+      "description": "Pinocchio with a remarkably long wooden nose, unveiled near the Hungarian Academy of Sciences / Vigadó embankment.",
       "lat": 47.4953713,
       "lon": 19.0490499
     },
     {
-      "name": "布博医生与紧张的兔子",
-      "description": "猫头鹰医生布博医生和他紧张的兔子病人，在贝塞斯达儿童医院的围栏上「开了家诊所」。",
+      "name": "Dr. Bubó & the Nervous Rabbit",
+      "description": "Dr. Bubó the owl-doctor and his anxious rabbit patient 'opened a clinic' on the Bethesda Children's Hospital fence.",
       "lat": 47.5119108,
       "lon": 19.0955531
     },
     {
-      "name": "威廉·齐格蒙德",
-      "description": "19世纪矿业工程师，钻凿了供应塞切尼温泉的城市公园自流井，雕像表现他悠闲放松的姿态。",
+      "name": "Vilmos Zsigmondy",
+      "description": "The 19th-century mining engineer who drilled the City Park artesian well feeding the Széchenyi Bath, shown relaxing.",
       "lat": 47.5184354,
       "lon": 19.0825223
     }
