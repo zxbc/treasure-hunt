@@ -8,6 +8,9 @@ import com.treasurehunt.app.data.LocationEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * Singleton that owns the live hunt state: the active list snapshot, the
@@ -35,6 +38,7 @@ object HuntEngine {
         val distanceM: Double,
         val ratio: Float, // distance / radius, 0..1 (0 = exactly on top of it)
         val level: Int, // 0..4 urgency; 4 = hottest
+        val bearing: Float, // direction from user to target, degrees clockwise from north (0..360)
     )
 
     data class State(
@@ -154,7 +158,7 @@ object HuntEngine {
         val nearest = best?.let {
             val ratio = (bestDistance / radius).toFloat().coerceIn(0f, 1f)
             val level = (4 - (ratio * 5f).toInt()).coerceIn(0, 4)
-            Nearest(it, bestDistance.toDouble(), ratio, level)
+            Nearest(it, bestDistance.toDouble(), ratio, level, initialBearing(fix.latitude, fix.longitude, it.lat, it.lon))
         }
 
         _state.update {
@@ -165,6 +169,16 @@ object HuntEngine {
                 mutedLocations = activeLocations.filter { l -> l.muted },
             )
         }
+    }
+
+    /** Great-circle initial bearing from the user fix to a target, in degrees clockwise from north. */
+    private fun initialBearing(userLat: Double, userLon: Double, targetLat: Double, targetLon: Double): Float {
+        val phi1 = Math.toRadians(userLat)
+        val phi2 = Math.toRadians(targetLat)
+        val deltaLon = Math.toRadians(targetLon - userLon)
+        val y = sin(deltaLon) * cos(phi2)
+        val x = cos(phi1) * sin(phi2) - sin(phi1) * cos(phi2) * cos(deltaLon)
+        return ((Math.toDegrees(atan2(y, x)) + 360.0) % 360.0).toFloat()
     }
 
     /** Mutes the currently nearest (active) location. Returns the muted location id. */

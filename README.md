@@ -12,6 +12,7 @@ An Android app that turns a list of named locations into a proximity "hotter or 
 - **Per-spot muting** — "Mute nearest" silences the currently closest spot (persisted per list); mute it again later from the hunt screen. You can also stop the whole hunt.
 - **Configurable radius** — slider in Settings, 100 m to 2000 m, default 500 m, persisted.
 - **Live notification** — while a hunt runs you always see the current target, distance and urgency, with *Mute nearest* / *Stop hunt* buttons, so it works with the screen off.
+- **Compass** — a direction rose on the hunt screen points at the nearest active spot; the bearing is computed from your location and tracked with the phone's rotation-vector sensor, and the needle takes the current urgency color.
 
 ## JSON format
 
