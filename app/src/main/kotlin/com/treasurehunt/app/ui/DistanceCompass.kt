@@ -10,6 +10,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -35,10 +36,14 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.treasurehunt.app.R
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * The main hunt dial: the compass rose and the urgency gauge merged into one
@@ -80,6 +85,24 @@ fun DistanceCompass(
         label = "compass-needle",
     )
 
+    // Ring rotation: the ticks and cardinal labels turn with the phone (like
+    // a real compass), so north always points at true north. Unwrapped and
+    // springed with the same spec as the needle, which keeps the needle fixed
+    // against the ring at the target's true bearing.
+    val ringTarget = remember { mutableFloatStateOf(0f) }
+    if (!azimuth.floatValue.isNaN()) {
+        var unwrapped = -azimuth.floatValue
+        val current = ringTarget.floatValue
+        while (unwrapped - current > 180f) unwrapped -= 360f
+        while (unwrapped - current < -180f) unwrapped += 360f
+        if (unwrapped != current) ringTarget.floatValue = unwrapped
+    }
+    val ringRotation by animateFloatAsState(
+        targetValue = ringTarget.floatValue,
+        animationSpec = spring(dampingRatio = 0.8f, stiffness = 300f),
+        label = "compass-ring",
+    )
+
     val outline = MaterialTheme.colorScheme.outline
     val onSurfaceVariant = MaterialTheme.colorScheme.onSurfaceVariant
     val onBackground = MaterialTheme.colorScheme.onBackground
@@ -113,7 +136,7 @@ fun DistanceCompass(
                 }
                 val tickColor = if (deg % 90 == 0) onSurfaceVariant else outline
                 val tickWidth = if (deg % 90 == 0) 2.5.dp.toPx() else 1.dp.toPx()
-                rotate(degrees = deg.toFloat(), pivot = Offset(cx, cy)) {
+                rotate(degrees = deg.toFloat() + ringRotation, pivot = Offset(cx, cy)) {
                     val edge = r - 3.dp.toPx()
                     drawLine(
                         color = tickColor,
@@ -184,31 +207,40 @@ fun DistanceCompass(
             )
         }
 
-        // Cardinal labels, offset inward from the ring.
-        Text(
-            stringResource(R.string.cardinal_n),
+        // Cardinal labels, rotated with the ring so they always sit at their
+        // true bearings.
+        CardinalLabel(
+            text = stringResource(R.string.cardinal_n),
+            bearing = 0f,
+            ringRotation = ringRotation,
+            radius = labelRadius,
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.align(Alignment.Center).offset(y = -labelRadius),
         )
-        Text(
-            stringResource(R.string.cardinal_e),
+        CardinalLabel(
+            text = stringResource(R.string.cardinal_e),
+            bearing = 90f,
+            ringRotation = ringRotation,
+            radius = labelRadius,
             style = MaterialTheme.typography.labelMedium,
             color = onSurfaceVariant,
-            modifier = Modifier.align(Alignment.Center).offset(x = labelRadius),
         )
-        Text(
-            stringResource(R.string.cardinal_s),
+        CardinalLabel(
+            text = stringResource(R.string.cardinal_s),
+            bearing = 180f,
+            ringRotation = ringRotation,
+            radius = labelRadius,
             style = MaterialTheme.typography.labelMedium,
             color = onSurfaceVariant,
-            modifier = Modifier.align(Alignment.Center).offset(y = labelRadius),
         )
-        Text(
-            stringResource(R.string.cardinal_w),
+        CardinalLabel(
+            text = stringResource(R.string.cardinal_w),
+            bearing = 270f,
+            ringRotation = ringRotation,
+            radius = labelRadius,
             style = MaterialTheme.typography.labelMedium,
             color = onSurfaceVariant,
-            modifier = Modifier.align(Alignment.Center).offset(x = -labelRadius),
         )
 
         // Distance display in the middle.
@@ -234,6 +266,36 @@ fun DistanceCompass(
             }
         }
     }
+}
+
+/**
+ * One cardinal label of the rotating ring. [bearing] is the label's true
+ * bearing (0 = north, clockwise); [ringRotation] turns it with the phone so
+ * the label always sits at its true bearing on the dial.
+ */
+@Composable
+private fun BoxScope.CardinalLabel(
+    text: String,
+    bearing: Float,
+    ringRotation: Float,
+    radius: Dp,
+    style: TextStyle,
+    color: Color,
+    fontWeight: FontWeight? = null,
+) {
+    val radians = Math.toRadians((bearing + ringRotation).toDouble())
+    Text(
+        text,
+        style = style,
+        color = color,
+        fontWeight = fontWeight ?: FontWeight.Normal,
+        modifier = Modifier
+            .align(Alignment.Center)
+            .offset(
+                x = (radius.value * sin(radians)).dp,
+                y = (-radius.value * cos(radians)).dp,
+            ),
+    )
 }
 
 /**
