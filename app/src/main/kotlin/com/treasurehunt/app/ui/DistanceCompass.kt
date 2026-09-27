@@ -10,6 +10,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -35,26 +36,31 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.treasurehunt.app.R
 
 /**
- * A compass rose that points at the nearest active spot of the current hunt.
+ * The main hunt dial: the compass rose and the urgency gauge merged into one
+ * circle. Compass ticks and cardinal labels sit on the outer perimeter, the
+ * urgency ring (and needle) point at the tracked spot, and the distance
+ * display sits in the middle.
  *
  * The needle angle is the geographic bearing from the user to the target
  * (computed by [com.treasurehunt.app.hunt.HuntEngine]) minus the phone's
  * current azimuth (from the rotation vector sensor), so the needle keeps
  * pointing at the target while the phone is turned. The needle follows with a
- * short spring and takes the urgency color of the current proximity level,
- * matching the gauge above it.
+ * short spring and takes the urgency color of the current proximity level.
  */
 @Composable
-fun CompassRose(
+fun DistanceCompass(
     targetBearing: Float,
+    progress: Float,
+    color: Color,
     needleColor: Color,
-    modifier: Modifier = Modifier.size(200.dp),
+    centerText: String,
+    subText: String,
+    modifier: Modifier = Modifier.size(320.dp),
 ) {
     val azimuth = rememberDeviceAzimuth()
 
@@ -77,32 +83,38 @@ fun CompassRose(
     val outline = MaterialTheme.colorScheme.outline
     val onSurfaceVariant = MaterialTheme.colorScheme.onSurfaceVariant
     val onBackground = MaterialTheme.colorScheme.onBackground
+    val surface = MaterialTheme.colorScheme.surface
 
-    Box(modifier.clip(CircleShape).background(MaterialTheme.colorScheme.surface)) {
+    // Radii of the inner elements, for the default 320.dp dial size
+    // (half of it is 160.dp).
+    val discRadius = 70.dp
+    val labelRadius = 131.dp
+
+    Box(modifier.clip(CircleShape).background(surface)) {
         Canvas(Modifier.fillMaxSize()) {
             val cx = size.width / 2f
             val cy = size.height / 2f
             val r = size.minDimension / 2f
 
-            // Outer ring
+            // Outer compass ring
             drawCircle(
                 color = outline,
                 radius = r - 1.dp.toPx(),
                 style = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round),
             )
 
-            // Tick marks: fine every 15 degrees, longer at the intercardinals,
-            // longest at the cardinals.
+            // Compass ticks: fine every 15 degrees, longer at the
+            // intercardinals, longest at the cardinals.
             for (deg in 0 until 360 step 15) {
                 val tickLength = when (deg % 90) {
-                    0 -> 10.dp.toPx()
+                    0 -> 11.dp.toPx()
                     45 -> 8.dp.toPx()
                     else -> 4.5.dp.toPx()
                 }
                 val tickColor = if (deg % 90 == 0) onSurfaceVariant else outline
                 val tickWidth = if (deg % 90 == 0) 2.5.dp.toPx() else 1.dp.toPx()
                 rotate(degrees = deg.toFloat(), pivot = Offset(cx, cy)) {
-                    val edge = r - 2.5.dp.toPx()
+                    val edge = r - 3.dp.toPx()
                     drawLine(
                         color = tickColor,
                         start = Offset(cx, cy - edge),
@@ -113,10 +125,39 @@ fun CompassRose(
                 }
             }
 
-            // Needle: the target half is colored by urgency, the tail is muted.
+            // Urgency ring: a 270-degree meter between the compass and the
+            // center, filled by [progress] and colored [color].
+            val arcRadius = r * 0.68f
+            val arcRect = androidx.compose.ui.geometry.Rect(
+                cx - arcRadius,
+                cy - arcRadius,
+                cx + arcRadius,
+                cy + arcRadius,
+            )
+            val arcPath = Path().apply { addArc(arcRect, 135f, 270f) }
+            drawPath(
+                arcPath,
+                outline,
+                style = Stroke(width = 10.dp.toPx(), cap = StrokeCap.Round),
+            )
+            if (progress > 0.002f) {
+                val progressPath = Path().apply {
+                    addArc(arcRect, 135f, 270f * progress)
+                }
+                drawPath(
+                    progressPath,
+                    color,
+                    style = Stroke(width = 10.dp.toPx(), cap = StrokeCap.Round),
+                )
+            }
+
+            // Needle: the target half is colored by urgency, the tail is
+            // muted. It is drawn before the center disc, which covers its
+            // pivot so the needle appears to emerge from the distance
+            // display and point at the tracked spot.
             rotate(degrees = angle, pivot = Offset(cx, cy)) {
-                val tip = r * 0.52f
-                val halfWidth = r * 0.16f
+                val tip = r * 0.58f
+                val halfWidth = r * 0.13f
                 val targetHalf = Path().apply {
                     moveTo(cx, cy - tip)
                     lineTo(cx + halfWidth, cy)
@@ -133,17 +174,17 @@ fun CompassRose(
                 drawPath(tailHalf, outline, style = Fill)
             }
 
-            // Center cap
-            drawCircle(onBackground, radius = r * 0.08f)
+            // Center disc behind the distance display
+            val discRadiusPx = discRadius.toPx()
+            drawCircle(color = surface, radius = discRadiusPx)
             drawCircle(
                 color = outline,
-                radius = r * 0.08f,
-                style = Stroke(width = 1.5.dp.toPx()),
+                radius = discRadiusPx,
+                style = Stroke(width = 1.dp.toPx()),
             )
         }
 
         // Cardinal labels, offset inward from the ring.
-        val labelRadius = 64.dp
         Text(
             stringResource(R.string.cardinal_n),
             style = MaterialTheme.typography.labelLarge,
@@ -169,39 +210,28 @@ fun CompassRose(
             color = onSurfaceVariant,
             modifier = Modifier.align(Alignment.Center).offset(x = -labelRadius),
         )
+
+        // Distance display in the middle.
+        Box(
+            modifier = Modifier.size(discRadius * 2),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column() {
+                Text(
+                    centerText,
+                    fontSize = 34.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = onBackground,
+                )
+                Text(
+                    subText,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = color,
+                )
+            }
+        }
     }
-}
-
-/** Compass caption below the rose: compass direction plus a hint. */
-@Composable
-fun CompassCaption(targetBearing: Float, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    Text(
-        stringResource(
-            R.string.compass_caption,
-            cardinalDirection(context, targetBearing),
-        ),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
-        modifier = modifier,
-    )
-}
-
-private val CardinalRes = intArrayOf(
-    R.string.cardinal_n,
-    R.string.cardinal_ne,
-    R.string.cardinal_e,
-    R.string.cardinal_se,
-    R.string.cardinal_s,
-    R.string.cardinal_sw,
-    R.string.cardinal_w,
-    R.string.cardinal_nw,
-)
-
-private fun cardinalDirection(context: Context, bearing: Float): String {
-    val index = ((bearing + 22.5f) % 360f).toInt() / 45
-    return context.getString(CardinalRes[index.coerceIn(0, CardinalRes.size - 1)])
 }
 
 /**
@@ -211,7 +241,7 @@ private fun cardinalDirection(context: Context, bearing: Float): String {
  * composition recomposes when it changes.
  */
 @Composable
-private fun rememberDeviceAzimuth(): FloatState {
+fun rememberDeviceAzimuth(): FloatState {
     val context = LocalContext.current
     val azimuth = remember { mutableFloatStateOf(Float.NaN) }
     DisposableEffect(Unit) {

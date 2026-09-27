@@ -11,15 +11,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -33,9 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -111,9 +104,6 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
     val showEditor = editorListId != -1L
 
     Scaffold(
-        topBar = {
-            HuntTopBar(screen, onOpenSettings = { showSettings = true })
-        },
         bottomBar = {
             if (!showEditor) {
                 NavigationBar {
@@ -152,6 +142,7 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
                 engine = engine,
                 onRequestStart = { requestStart(it) },
                 onOpenLists = { screen = Screen.LISTS },
+                onOpenSettings = { showSettings = true },
             )
         }
     }
@@ -159,23 +150,4 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
     if (showSettings) {
         SettingsSheet(radius = engine.radiusM, onDismiss = { showSettings = false })
     }
-}
-
-@androidx.compose.material3.ExperimentalMaterial3Api
-@Composable
-private fun HuntTopBar(screen: Screen, onOpenSettings: () -> Unit) {
-    androidx.compose.material3.TopAppBar(
-        title = {
-            Text(stringResource(if (screen == Screen.HUNT) R.string.app_name else R.string.title_hunt_lists))
-        },
-        actions = {
-            IconButton(onClick = onOpenSettings) {
-                Icon(
-                    Icons.Filled.Settings,
-                    contentDescription = stringResource(R.string.cd_settings),
-                    modifier = Modifier.size(24.dp),
-                )
-            }
-        },
-    )
 }

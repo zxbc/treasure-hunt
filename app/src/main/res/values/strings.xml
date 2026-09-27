@@ -47,6 +47,9 @@
     <string name="stop">Stop</string>
     <string name="muted_spots">Muted spots</string>
     <string name="unmute">Unmute</string>
+    <string name="tracking_label">Tracking</string>
+    <string name="track_nearest_auto">Nearest (auto)</string>
+    <string name="cd_description_toggle">Expand or collapse description</string>
 
     <!-- Urgency levels, coldest to hottest -->
     <string name="urgency_cold">COLD</string>

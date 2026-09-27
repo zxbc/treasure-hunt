@@ -48,6 +48,8 @@ object HuntEngine {
         val listName: String = "",
         val radiusM: Int = 500,
         val nearest: Nearest? = null,
+        val spots: List<Nearest> = emptyList(), // all active (unmuted) spots, sorted by distance
+        val trackedId: Long? = null, // user-chosen tracked spot; null = follow the nearest
         val hasFix: Boolean = false,
         val lastFixAtMs: Long = 0L,
         val totalLocations: Int = 0,
@@ -105,6 +107,8 @@ object HuntEngine {
                 listName = listName,
                 radiusM = radiusFromPrefs(),
                 nearest = null,
+                spots = emptyList(),
+                trackedId = null,
                 hasFix = false,
                 lastFixAtMs = 0L,
                 totalLocations = locations.size,
@@ -123,6 +127,8 @@ object HuntEngine {
                 listId = 0L,
                 listName = "",
                 nearest = null,
+                spots = emptyList(),
+                trackedId = null,
                 hasFix = false,
                 lastFixAtMs = 0L,
                 totalLocations = 0,
@@ -152,29 +158,29 @@ object HuntEngine {
         user.latitude = fix.latitude
         user.longitude = fix.longitude
 
-        var best: LocationSnapshot? = null
-        var bestDistance: Float = Float.MAX_VALUE
-        for (candidate in activeLocations) {
-            if (candidate.muted) continue
-            val target = Location("target")
-            target.latitude = candidate.lat
-            target.longitude = candidate.lon
-            val distance = user.distanceTo(target)
-            if (distance < bestDistance) {
-                bestDistance = distance
-                best = candidate
+        val spots = activeLocations
+            .filter { !it.muted }
+            .map { candidate ->
+                val target = Location("target")
+                target.latitude = candidate.lat
+                target.longitude = candidate.lon
+                val distance = user.distanceTo(target).toDouble()
+                val ratio = (distance / radius).toFloat().coerceIn(0f, 1f)
+                val level = (4 - (ratio * 5f).toInt()).coerceIn(0, 4)
+                Nearest(
+                    candidate,
+                    distance,
+                    ratio,
+                    level,
+                    initialBearing(fix.latitude, fix.longitude, candidate.lat, candidate.lon),
+                )
             }
-        }
-
-        val nearest = best?.let {
-            val ratio = (bestDistance / radius).toFloat().coerceIn(0f, 1f)
-            val level = (4 - (ratio * 5f).toInt()).coerceIn(0, 4)
-            Nearest(it, bestDistance.toDouble(), ratio, level, initialBearing(fix.latitude, fix.longitude, it.lat, it.lon))
-        }
+            .sortedBy { it.distanceM }
 
         _state.update {
             it.copy(
-                nearest = nearest,
+                nearest = spots.firstOrNull(),
+                spots = spots,
                 hasFix = true,
                 lastFixAtMs = System.currentTimeMillis(),
                 mutedLocations = activeLocations.filter { l -> l.muted },
@@ -190,6 +196,11 @@ object HuntEngine {
         val y = sin(deltaLon) * cos(phi2)
         val x = cos(phi1) * sin(phi2) - sin(phi1) * cos(phi2) * cos(deltaLon)
         return ((Math.toDegrees(atan2(y, x)) + 360.0) % 360.0).toFloat()
+    }
+
+    /** Selects the spot the UI tracks; null returns to following the nearest. */
+    fun setTracked(id: Long?) {
+        _state.update { it.copy(trackedId = id) }
     }
 
     /** Mutes the currently nearest (active) location. Returns the muted location id. */

@@ -47,6 +47,9 @@
     <string name="stop">停止</string>
     <string name="muted_spots">已静音的地点</string>
     <string name="unmute">取消静音</string>
+    <string name="tracking_label">追踪</string>
+    <string name="track_nearest_auto">最近（自动）</string>
+    <string name="cd_description_toggle">展开或收起描述</string>
 
     <!-- Urgency levels, coldest to hottest -->
     <string name="urgency_cold">冷</string>

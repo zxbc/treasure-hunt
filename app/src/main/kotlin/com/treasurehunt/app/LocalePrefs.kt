@@ -18,7 +18,7 @@ object LocalePrefs {
     const val TAG_CHINESE = "zh-CN"
 
     /** Used when the user has not picked a language yet. */
-    const val DEFAULT_TAG = TAG_CHINESE
+    const val DEFAULT_TAG = TAG_ENGLISH
 
     private const val PREFS = "locale_prefs"
     private const val KEY_TAG = "language"

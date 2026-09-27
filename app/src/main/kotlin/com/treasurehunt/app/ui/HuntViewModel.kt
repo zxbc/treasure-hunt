@@ -58,6 +58,10 @@ class HuntViewModel(app: android.app.Application) : AndroidViewModel(app) {
         HuntEngine.saveRadius(meters)
     }
 
+    fun setTracked(locationId: Long?) {
+        HuntEngine.setTracked(locationId)
+    }
+
     fun saveList(name: String, drafts: List<LocationDraft>, onSaved: (Long) -> Unit) {
         viewModelScope.launch {
             val id = repo.insert(name.trim(), drafts)
