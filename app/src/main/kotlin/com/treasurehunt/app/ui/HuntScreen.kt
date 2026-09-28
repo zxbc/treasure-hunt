@@ -1,8 +1,12 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@file:OptIn(
+    androidx.compose.material3.ExperimentalMaterial3Api::class,
+    androidx.compose.foundation.ExperimentalFoundationApi::class,
+)
 
 package com.treasurehunt.app.ui
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,11 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -32,7 +33,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -211,9 +211,12 @@ private fun ActiveHuntContent(
 
         if (tracked != null && tracked.snapshot.description.isNotBlank()) {
             Spacer(Modifier.height(10.dp))
-            key(tracked.snapshot.id) {
-                TrackableDescription(tracked.snapshot.description)
-            }
+            Text(
+                tracked.snapshot.description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
 
         Spacer(Modifier.height(16.dp))
@@ -264,14 +267,19 @@ private fun ActiveHuntContent(
             centerText = center,
             subText = sub,
             centerContent = {
-                Button(onClick = { viewModel.stopHunt() }) {
+                Button(
+                    onClick = {
+                        tracked?.snapshot?.id?.let { viewModel.toggleMuted(it, true) }
+                    },
+                    enabled = tracked != null,
+                ) {
                     Icon(
-                        Icons.Filled.Stop,
+                        Icons.Filled.Check,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
                     )
                     Spacer(Modifier.size(6.dp))
-                    Text(stringResource(R.string.stop))
+                    Text(stringResource(R.string.found))
                 }
             },
         )
@@ -319,56 +327,32 @@ private fun SettingsGear(onOpenSettings: () -> Unit) {
 }
 
 /**
- * The description of the tracked spot: shown on a single line, expands to the
- * full text on a tap, and hides again on another tap.
- */
-@Composable
-private fun TrackableDescription(description: String) {
-    var expanded by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { expanded = !expanded }
-            .padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            description,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = if (expanded) Int.MAX_VALUE else 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f),
-        )
-        Icon(
-            if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-            contentDescription = stringResource(R.string.cd_description_toggle),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-/**
- * Dropdown menu of all active spots of the current hunt, sorted by distance.
+ * Dropdown menu of all spots of the current hunt, sorted by distance.
  * The closest spot is tracked by default; picking another spot tracks it
  * instead, and the first entry returns to following the nearest.
+ * Long-pressing a spot disables it from the hunt; disabled spots stay in
+ * the list (dimmed) and long-pressing them again re-enables them.
  * Rendered in the app's bottom bar while a hunt is active.
  */
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
 fun TrackingPicker(
     spots: List<HuntEngine.Nearest>,
+    mutedSpots: List<HuntEngine.LocationSnapshot>,
     trackedId: Long?,
     tracked: HuntEngine.Nearest?,
     onSelect: (Long?) -> Unit,
+    onToggleMute: (Long, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(modifier) {
         MenuSelectField(
             label = stringResource(R.string.tracking_label),
-            value = tracked?.let { it.snapshot.name } ?: stringResource(R.string.getting_location),
-            enabled = spots.isNotEmpty(),
+            value = tracked?.let { it.snapshot.name }
+                ?: if (mutedSpots.isNotEmpty()) stringResource(R.string.all_targets_muted)
+                else stringResource(R.string.getting_location),
+            enabled = spots.isNotEmpty() || mutedSpots.isNotEmpty(),
             expanded = expanded,
             onOpen = { expanded = true },
         )
@@ -388,6 +372,7 @@ fun TrackingPicker(
                 },
             )
             spots.forEach { spot ->
+                val source = remember(spot.snapshot.id) { MutableInteractionSource() }
                 DropdownMenuItem(
                     leadingIcon = {
                         CheckIcon(selected = trackedId != null && trackedId == spot.snapshot.id)
@@ -395,10 +380,38 @@ fun TrackingPicker(
                     text = {
                         Text(spot.snapshot.name + "  ·  " + formatDistance(spot.distanceM))
                     },
-                    onClick = {
-                        expanded = false
-                        onSelect(spot.snapshot.id)
+                    // The outer combinedClickable owns both gestures, so the
+                    // item's own click stays empty.
+                    onClick = {},
+                    modifier = Modifier.combinedClickable(
+                        interactionSource = source,
+                        indication = null,
+                        onClick = {
+                            expanded = false
+                            onSelect(spot.snapshot.id)
+                        },
+                        onLongClick = { onToggleMute(spot.snapshot.id, true) },
+                    ),
+                )
+            }
+            mutedSpots.forEach { spot ->
+                // Disabled spots: dimmed, taps are inert — long-press re-enables.
+                val source = remember(spot.id) { MutableInteractionSource() }
+                DropdownMenuItem(
+                    enabled = false,
+                    text = {
+                        Text(
+                            spot.name,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     },
+                    onClick = {},
+                    modifier = Modifier.combinedClickable(
+                        interactionSource = source,
+                        indication = null,
+                        onClick = {},
+                        onLongClick = { onToggleMute(spot.id, false) },
+                    ),
                 )
             }
         }
@@ -411,3 +424,4 @@ private fun CheckIcon(selected: Boolean) {
         Icon(Icons.Filled.Check, contentDescription = null)
     }
 }
+

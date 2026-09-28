@@ -114,9 +114,11 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
                     TrackingPicker(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                         spots = engine.spots,
+                        mutedSpots = engine.mutedLocations,
                         trackedId = engine.trackedId,
                         tracked = tracked,
                         onSelect = { viewModel.setTracked(it) },
+                        onToggleMute = { id, muted -> viewModel.toggleMuted(id, muted) },
                     )
                 }
             }
@@ -152,10 +154,12 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
     if (showSettings) {
         SettingsSheet(
             radius = engine.radiusM,
+            huntActive = engine.isActive,
             onManageLists = {
                 showSettings = false
                 showLists = true
             },
+            onStopHunt = { viewModel.stopHunt() },
             onDismiss = { showSettings = false },
         )
     }

@@ -18,6 +18,7 @@
     <string name="language_chinese">简体中文</string>
     <string name="manage_lists">管理寻宝列表</string>
     <string name="manage_lists_hint">创建、编辑、删除或切换你的寻宝列表。</string>
+    <string name="stop_hunt_hint">结束当前寻宝。</string>
 
     <!-- Lists screen -->
     <string name="lists_empty_title">还没有保存的列表</string>
@@ -42,12 +43,11 @@
     <string name="getting_location">正在获取位置</string>
     <string name="all_targets_muted">所有目标均已静音</string>
     <string name="outside_radius">在 %1$s 半径之外</string>
-    <string name="stop">停止</string>
+    <string name="found">已找到</string>
     <string name="muted_spots">已静音的地点</string>
     <string name="unmute">取消静音</string>
     <string name="tracking_label">追踪</string>
     <string name="track_nearest_auto">最近（自动）</string>
-    <string name="cd_description_toggle">展开或收起描述</string>
 
     <!-- Urgency levels, coldest to hottest -->
     <string name="urgency_cold">冷</string>

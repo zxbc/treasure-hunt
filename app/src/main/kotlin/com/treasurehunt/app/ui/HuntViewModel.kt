@@ -47,6 +47,14 @@ class HuntViewModel(app: android.app.Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Toggles a location's muted state; persisted to the list. */
+    fun toggleMuted(locationId: Long, muted: Boolean) {
+        viewModelScope.launch {
+            if (muted) HuntEngine.muteLocation(locationId) else HuntEngine.unmuteLocation(locationId)
+            repo.setLocationMuted(locationId, muted)
+        }
+    }
+
     fun setRadius(meters: Int) {
         HuntEngine.saveRadius(meters)
     }

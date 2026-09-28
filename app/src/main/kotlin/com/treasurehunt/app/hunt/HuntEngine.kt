@@ -212,6 +212,12 @@ object HuntEngine {
         return id
     }
 
+    /** Mutes a single location by id (the inverse of [unmuteLocation]). */
+    fun muteLocation(id: Long) {
+        activeLocations = activeLocations.map { if (it.id == id) it.copy(muted = true) else it }
+        recomputeNearest()
+    }
+
     fun unmuteLocation(id: Long) {
         activeLocations = activeLocations.map { if (it.id == id) it.copy(muted = false) else it }
         recomputeNearest()

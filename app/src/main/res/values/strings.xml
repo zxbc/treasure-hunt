@@ -18,6 +18,7 @@
     <string name="language_chinese">简体中文</string>
     <string name="manage_lists">Manage hunt lists</string>
     <string name="manage_lists_hint">Create, edit, delete, or switch your hunt lists.</string>
+    <string name="stop_hunt_hint">Ends the current treasure hunt.</string>
 
     <!-- Lists screen -->
     <string name="lists_empty_title">No lists saved yet</string>
@@ -42,12 +43,11 @@
     <string name="getting_location">Getting location</string>
     <string name="all_targets_muted">All targets muted</string>
     <string name="outside_radius">outside %1$s radius</string>
-    <string name="stop">Stop</string>
+    <string name="found">Found</string>
     <string name="muted_spots">Muted spots</string>
     <string name="unmute">Unmute</string>
     <string name="tracking_label">Tracking</string>
     <string name="track_nearest_auto">Nearest (auto)</string>
-    <string name="cd_description_toggle">Expand or collapse description</string>
 
     <!-- Urgency levels, coldest to hottest -->
     <string name="urgency_cold">COLD</string>

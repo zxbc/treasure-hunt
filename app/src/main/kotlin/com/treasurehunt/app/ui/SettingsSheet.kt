@@ -32,7 +32,13 @@ import com.treasurehunt.app.hunt.HuntEngine
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsSheet(radius: Int, onManageLists: () -> Unit, onDismiss: () -> Unit) {
+fun SettingsSheet(
+    radius: Int,
+    huntActive: Boolean,
+    onManageLists: () -> Unit,
+    onStopHunt: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     val context = LocalContext.current
     val currentLanguage = LocalePrefs.current(context)
 
@@ -67,6 +73,21 @@ fun SettingsSheet(radius: Int, onManageLists: () -> Unit, onDismiss: () -> Unit)
                 steps = 37,
             )
             RowOfLabels(radius)
+
+            Spacer(Modifier.height(20.dp))
+            Text(
+                stringResource(R.string.stop_hunt_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
+            Button(
+                onClick = onStopHunt,
+                enabled = huntActive,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.stop_hunt))
+            }
 
             Spacer(Modifier.height(20.dp))
             Text(
