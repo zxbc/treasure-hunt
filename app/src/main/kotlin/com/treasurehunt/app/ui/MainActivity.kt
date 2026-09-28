@@ -10,15 +10,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,16 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.treasurehunt.app.LocalePrefs
-import com.treasurehunt.app.R
 import com.treasurehunt.app.data.BuiltInLists
 import com.treasurehunt.app.hunt.HuntEngine
-
-enum class Screen { HUNT, LISTS }
 
 class MainActivity : ComponentActivity() {
     override fun attachBaseContext(newBase: Context) {
@@ -59,7 +53,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppRoot(viewModel: HuntViewModel = viewModel()) {
     val context = LocalContext.current
-    var screen by rememberSaveable { mutableStateOf(Screen.HUNT) }
+    var showLists by rememberSaveable { mutableStateOf(false) }
     var editorListId by rememberSaveable { mutableStateOf(-1L) } // -1 = editor hidden, 0 = new list
     var showSettings by rememberSaveable { mutableStateOf(false) }
     var pendingListId by rememberSaveable { mutableStateOf(0L) }
@@ -102,52 +96,67 @@ fun AppRoot(viewModel: HuntViewModel = viewModel()) {
     }
 
     val showEditor = editorListId != -1L
+    // The tracked spot for the bottom picker: the user's choice when one was
+    // made, otherwise the closest active spot (top of the sorted list).
+    val tracked = engine.spots.firstOrNull { it.snapshot.id == engine.trackedId }
+        ?: engine.spots.firstOrNull()
 
     Scaffold(
         bottomBar = {
-            if (!showEditor) {
-                NavigationBar {
-                    val huntLabel = stringResource(R.string.nav_hunt)
-                    val listsLabel = stringResource(R.string.nav_lists)
-                    NavigationBarItem(
-                        selected = screen == Screen.HUNT,
-                        onClick = { screen = Screen.HUNT },
-                        icon = { Icon(Icons.Filled.Map, contentDescription = huntLabel) },
-                        label = { Text(huntLabel) },
-                    )
-                    NavigationBarItem(
-                        selected = screen == Screen.LISTS,
-                        onClick = { screen = Screen.LISTS },
-                        icon = { Icon(Icons.Filled.List, contentDescription = listsLabel) },
-                        label = { Text(listsLabel) },
+            // The tracking dropdown lives at the very bottom of the screen,
+            // where the old hunt/lists navigation used to sit, shown while a
+            // hunt is active.
+            if (engine.isActive && !showEditor && !showLists) {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    tonalElevation = 0.dp,
+                ) {
+                    TrackingPicker(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                        spots = engine.spots,
+                        trackedId = engine.trackedId,
+                        tracked = tracked,
+                        onSelect = { viewModel.setTracked(it) },
                     )
                 }
             }
         },
-    ) { padding ->
-        Modifier.padding(padding)
-        when {
-            showEditor -> ListEditorScreen(
-                viewModel = viewModel,
-                listId = editorListId,
-                onBack = { editorListId = -1L },
-            )
-            screen == Screen.LISTS -> ListsScreen(
-                viewModel = viewModel,
-                onOpenEditor = { id -> editorListId = id },
-                onRequestStart = { requestStart(it) },
-            )
-            else -> HuntScreen(
-                viewModel = viewModel,
-                engine = engine,
-                onRequestStart = { requestStart(it) },
-                onOpenLists = { screen = Screen.LISTS },
-                onOpenSettings = { showSettings = true },
-            )
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
+            when {
+                showEditor -> ListEditorScreen(
+                    viewModel = viewModel,
+                    listId = editorListId,
+                    onBack = { editorListId = -1L },
+                )
+                showLists -> ListsScreen(
+                    viewModel = viewModel,
+                    onOpenEditor = { id -> editorListId = id },
+                    onRequestStart = { requestStart(it) },
+                    onBack = { showLists = false },
+                )
+                else -> HuntScreen(
+                    viewModel = viewModel,
+                    engine = engine,
+                    onRequestStart = { requestStart(it) },
+                    onOpenSettings = { showSettings = true },
+                )
+            }
         }
     }
 
     if (showSettings) {
-        SettingsSheet(radius = engine.radiusM, onDismiss = { showSettings = false })
+        SettingsSheet(
+            radius = engine.radiusM,
+            onManageLists = {
+                showSettings = false
+                showLists = true
+            },
+            onDismiss = { showSettings = false },
+        )
     }
 }

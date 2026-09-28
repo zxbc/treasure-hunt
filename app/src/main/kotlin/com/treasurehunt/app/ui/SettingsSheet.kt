@@ -32,7 +32,7 @@ import com.treasurehunt.app.hunt.HuntEngine
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsSheet(radius: Int, onDismiss: () -> Unit) {
+fun SettingsSheet(radius: Int, onManageLists: () -> Unit, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val currentLanguage = LocalePrefs.current(context)
 
@@ -107,6 +107,21 @@ fun SettingsSheet(radius: Int, onDismiss: () -> Unit) {
                         modifier = Modifier.weight(1f),
                     ) { Text(stringResource(R.string.language_chinese)) }
                 }
+            }
+
+            Spacer(Modifier.height(20.dp))
+            Text(
+                stringResource(R.string.title_hunt_lists),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                stringResource(R.string.manage_lists_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
+            Button(onClick = onManageLists, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.manage_lists))
             }
         }
     }

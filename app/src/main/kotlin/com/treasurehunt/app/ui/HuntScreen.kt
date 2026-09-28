@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -60,7 +59,6 @@ fun HuntScreen(
     viewModel: HuntViewModel,
     engine: HuntEngine.State,
     onRequestStart: (Long) -> Unit,
-    onOpenLists: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
     val lists by viewModel.lists.collectAsStateWithLifecycle()
@@ -74,7 +72,7 @@ fun HuntScreen(
         if (engine.isActive) {
             ActiveHuntContent(viewModel, engine, onOpenSettings)
         } else {
-            InactiveHuntContent(lists, engine.radiusM, onRequestStart, onOpenLists, onOpenSettings)
+            InactiveHuntContent(lists, engine.radiusM, onRequestStart, onOpenSettings)
         }
     }
 }
@@ -85,7 +83,6 @@ private fun InactiveHuntContent(
     lists: List<HuntListWithLocations>,
     radiusM: Int,
     onRequestStart: (Long) -> Unit,
-    onOpenLists: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
     Column(
@@ -163,11 +160,6 @@ private fun InactiveHuntContent(
                 }
             }
             SettingsGear(onOpenSettings)
-        }
-
-        if (lists.isEmpty()) {
-            Spacer(Modifier.height(24.dp))
-            Button(onClick = onOpenLists) { Text(stringResource(R.string.create_list)) }
         }
     }
 }
@@ -271,32 +263,19 @@ private fun ActiveHuntContent(
             needleColor = needleColor,
             centerText = center,
             subText = sub,
+            centerContent = {
+                Button(onClick = { viewModel.stopHunt() }) {
+                    Icon(
+                        Icons.Filled.Stop,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(Modifier.size(6.dp))
+                    Text(stringResource(R.string.stop))
+                }
+            },
         )
         Spacer(Modifier.height(20.dp))
-
-        TrackingPicker(
-            spots = engine.spots,
-            trackedId = engine.trackedId,
-            tracked = tracked,
-            onSelect = { viewModel.setTracked(it) },
-        )
-        Spacer(Modifier.height(16.dp))
-
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(
-                onClick = { viewModel.muteNearest() },
-                enabled = engine.nearest != null,
-            ) {
-                Icon(Icons.Filled.VolumeOff, contentDescription = null)
-                Spacer(Modifier.size(6.dp))
-                Text(stringResource(R.string.mute_nearest))
-            }
-            Button(onClick = { viewModel.stopHunt() }) {
-                Icon(Icons.Filled.Stop, contentDescription = null)
-                Spacer(Modifier.size(6.dp))
-                Text(stringResource(R.string.stop))
-            }
-        }
 
         if (engine.mutedLocations.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
@@ -373,17 +352,19 @@ private fun TrackableDescription(description: String) {
  * Dropdown menu of all active spots of the current hunt, sorted by distance.
  * The closest spot is tracked by default; picking another spot tracks it
  * instead, and the first entry returns to following the nearest.
+ * Rendered in the app's bottom bar while a hunt is active.
  */
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
-private fun TrackingPicker(
+fun TrackingPicker(
     spots: List<HuntEngine.Nearest>,
     trackedId: Long?,
     tracked: HuntEngine.Nearest?,
     onSelect: (Long?) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Column(Modifier.fillMaxWidth()) {
+    Column(modifier) {
         MenuSelectField(
             label = stringResource(R.string.tracking_label),
             value = tracked?.let { it.snapshot.name } ?: stringResource(R.string.getting_location),

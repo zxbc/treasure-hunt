@@ -12,7 +12,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -65,6 +67,7 @@ fun DistanceCompass(
     needleColor: Color,
     centerText: String,
     subText: String,
+    centerContent: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier.size(320.dp),
 ) {
     val azimuth = rememberDeviceAzimuth()
@@ -243,14 +246,15 @@ fun DistanceCompass(
             color = onSurfaceVariant,
         )
 
-        // Distance display in the middle.
+        // Distance display in the middle; [centerContent] (e.g. the stop
+        // button) sits just below it when provided.
         Box(
             modifier = Modifier
                 .size(discRadius * 2)
                 .align(Alignment.Center),
             contentAlignment = Alignment.Center,
         ) {
-            Column() {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     centerText,
                     fontSize = 34.sp,
@@ -263,6 +267,10 @@ fun DistanceCompass(
                     fontWeight = FontWeight.SemiBold,
                     color = color,
                 )
+                if (centerContent != null) {
+                    Spacer(Modifier.height(6.dp))
+                    centerContent()
+                }
             }
         }
     }

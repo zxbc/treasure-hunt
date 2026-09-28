@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -49,6 +50,7 @@ fun ListsScreen(
     viewModel: HuntViewModel,
     onOpenEditor: (Long) -> Unit,
     onRequestStart: (Long) -> Unit,
+    onBack: () -> Unit,
 ) {
     val lists by viewModel.lists.collectAsStateWithLifecycle()
     val engine by viewModel.engineState.collectAsStateWithLifecycle()
@@ -60,6 +62,23 @@ fun ListsScreen(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp, vertical = 8.dp),
         ) {
+            // Reached from the settings sheet, so provide a way back.
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.cd_back),
+                    )
+                }
+                Text(
+                    stringResource(R.string.title_hunt_lists),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = 8.dp),
+                )
+            }
             if (lists.isEmpty()) {
                 Column(
                     modifier = Modifier.fillMaxSize(),

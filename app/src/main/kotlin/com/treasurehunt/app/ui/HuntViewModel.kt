@@ -40,13 +40,6 @@ class HuntViewModel(app: android.app.Application) : AndroidViewModel(app) {
         getApplication<Application>().startForegroundService(intent)
     }
 
-    fun muteNearest() {
-        viewModelScope.launch {
-            val id = HuntEngine.muteNearestLocation()
-            if (id != null) repo.setLocationMuted(id, true)
-        }
-    }
-
     fun unmute(locationId: Long) {
         viewModelScope.launch {
             HuntEngine.unmuteLocation(locationId)
