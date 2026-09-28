@@ -1,13 +1,13 @@
 @file:OptIn(
     androidx.compose.material3.ExperimentalMaterial3Api::class,
-    androidx.compose.foundation.ExperimentalFoundationApi::class,
 )
 
 package com.treasurehunt.app.ui
 
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
+import androidx.compose.ui.input.pointer.isOutOfBounds
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -372,48 +375,82 @@ fun TrackingPicker(
                 },
             )
             spots.forEach { spot ->
-                val source = remember(spot.snapshot.id) { MutableInteractionSource() }
-                DropdownMenuItem(
-                    leadingIcon = {
-                        CheckIcon(selected = trackedId != null && trackedId == spot.snapshot.id)
-                    },
-                    text = {
-                        Text(spot.snapshot.name + "  ·  " + formatDistance(spot.distanceM))
-                    },
-                    // The outer combinedClickable owns both gestures, so the
-                    // item's own click stays empty.
-                    onClick = {},
-                    modifier = Modifier.combinedClickable(
-                        interactionSource = source,
-                        indication = null,
+                // The Box's pointer input runs before the item's own clickable
+                // (parent first), so it can pre-empt the tap on a long press.
+                Box(Modifier.longPressPreempt(spot.snapshot.id) {
+                    onToggleMute(spot.snapshot.id, true)
+                }) {
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            CheckIcon(selected = trackedId != null && trackedId == spot.snapshot.id)
+                        },
+                        text = {
+                            Text(spot.snapshot.name + "  ·  " + formatDistance(spot.distanceM))
+                        },
                         onClick = {
                             expanded = false
                             onSelect(spot.snapshot.id)
                         },
-                        onLongClick = { onToggleMute(spot.snapshot.id, true) },
-                    ),
-                )
+                    )
+                }
             }
             mutedSpots.forEach { spot ->
                 // Disabled spots: dimmed, taps are inert — long-press re-enables.
-                val source = remember(spot.id) { MutableInteractionSource() }
-                DropdownMenuItem(
-                    enabled = false,
-                    text = {
-                        Text(
-                            spot.name,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    },
-                    onClick = {},
-                    modifier = Modifier.combinedClickable(
-                        interactionSource = source,
-                        indication = null,
+                Box(Modifier.longPressPreempt(spot.id) {
+                    onToggleMute(spot.id, false)
+                }) {
+                    DropdownMenuItem(
+                        enabled = false,
+                        text = {
+                            Text(
+                                spot.name,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
                         onClick = {},
-                        onLongClick = { onToggleMute(spot.id, false) },
-                    ),
-                )
+                    )
+                }
             }
+        }
+    }
+}
+
+/**
+ * Detects a long press on the layout carrying this modifier — which must be a
+ * PARENT of the item's own clickable (the DropdownMenuItem's row) — without
+ * stealing quick taps. Pointer input on the parent runs before the child's, so
+ * on the long-press timeout the callback fires and every pointer event is then
+ * consumed until release; the child's click detector sees the consumed events
+ * and can never complete the tap (no stray select after a mute). Before the
+ * timeout nothing is consumed, so a quick tap reaches the item's own onClick.
+ */
+private fun Modifier.longPressPreempt(
+    key: Any,
+    onLongPress: () -> Unit,
+): Modifier = pointerInput(key) {
+    val longPressTimeout = viewConfiguration.longPressTimeoutMillis
+    awaitEachGesture {
+        awaitFirstDown()
+        try {
+            withTimeout(longPressTimeout) {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    // Released before the long press: leave it to the item's click.
+                    if (event.changes.all { !it.pressed }) return@withTimeout
+                    // The menu scrolled (or the finger left the item): do nothing.
+                    if (event.changes.any { it.isConsumed || it.isOutOfBounds(size, extendedTouchPadding) }) {
+                        return@withTimeout
+                    }
+                }
+            }
+        } catch (_: PointerEventTimeoutCancellationException) {
+            // Long press: toggle the spot, then consume everything until release
+            // so the item's click detector ignores the rest of the gesture.
+            onLongPress()
+            do {
+                val event = awaitPointerEvent()
+                event.changes.forEach { it.consume() }
+            } while (event.changes.any { it.pressed })
         }
     }
 }
