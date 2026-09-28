@@ -44,6 +44,8 @@
     <string name="all_targets_muted">All targets muted</string>
     <string name="outside_radius">outside %1$s radius</string>
     <string name="found">Found</string>
+    <string name="cd_show_images">Show photos of this spot</string>
+    <string name="cd_close_images">Close photos</string>
     <string name="muted_spots">Muted spots</string>
     <string name="unmute">Unmute</string>
     <string name="mute_spot">Mute spot</string>

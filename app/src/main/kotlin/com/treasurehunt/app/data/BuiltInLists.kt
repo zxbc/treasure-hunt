@@ -3,6 +3,8 @@ package com.treasurehunt.app.data
 import android.content.Context
 import com.treasurehunt.app.LocalePrefs
 import com.treasurehunt.app.hunt.HuntEngine
+
+// SpotImages lives in this package, no import needed.
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -53,6 +55,7 @@ object BuiltInLists {
     fun importAllIfNeeded(context: Context) {
         scope.launch {
             try {
+                SpotImages.preload(context)
                 val repo = Repository(HuntDatabase.get(context))
                 importMissing(context, repo)
                 applyLanguageDefault(context, repo)

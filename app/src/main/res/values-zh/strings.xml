@@ -44,6 +44,8 @@
     <string name="all_targets_muted">所有目标均已静音</string>
     <string name="outside_radius">在 %1$s 半径之外</string>
     <string name="found">已找到</string>
+    <string name="cd_show_images">查看该地点的照片</string>
+    <string name="cd_close_images">关闭照片</string>
     <string name="muted_spots">已静音的地点</string>
     <string name="unmute">取消静音</string>
     <string name="mute_spot">静音该地点</string>
