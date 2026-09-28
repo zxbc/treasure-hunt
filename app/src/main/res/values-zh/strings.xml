@@ -46,6 +46,7 @@
     <string name="found">已找到</string>
     <string name="muted_spots">已静音的地点</string>
     <string name="unmute">取消静音</string>
+    <string name="mute_spot">静音该地点</string>
     <string name="tracking_label">追踪</string>
     <string name="track_nearest_auto">最近（自动）</string>
 

@@ -46,6 +46,7 @@
     <string name="found">Found</string>
     <string name="muted_spots">Muted spots</string>
     <string name="unmute">Unmute</string>
+    <string name="mute_spot">Mute spot</string>
     <string name="tracking_label">Tracking</string>
     <string name="track_nearest_auto">Nearest (auto)</string>
 

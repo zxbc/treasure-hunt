@@ -4,8 +4,7 @@
 
 package com.treasurehunt.app.ui
 
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +13,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -39,9 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
-import androidx.compose.ui.input.pointer.isOutOfBounds
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -331,11 +332,11 @@ private fun SettingsGear(onOpenSettings: () -> Unit) {
 
 /**
  * Dropdown menu of all spots of the current hunt, sorted by distance.
- * The closest spot is tracked by default; picking another spot tracks it
+ * The closest spot is tracked by default; tapping a spot tracks it
  * instead, and the first entry returns to following the nearest.
- * Long-pressing a spot disables it from the hunt; disabled spots stay in
- * the list (dimmed) and long-pressing them again re-enables them.
- * Rendered in the app's bottom bar while a hunt is active.
+ * Each spot row carries a button on its right end that mutes the spot
+ * from the hunt; muted spots stay in the list (dimmed) and the button
+ * re-enables them. Rendered in the app's bottom bar while a hunt is active.
  */
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
@@ -375,82 +376,88 @@ fun TrackingPicker(
                 },
             )
             spots.forEach { spot ->
-                // The Box's pointer input runs before the item's own clickable
-                // (parent first), so it can pre-empt the tap on a long press.
-                Box(Modifier.longPressPreempt(spot.snapshot.id) {
-                    onToggleMute(spot.snapshot.id, true)
-                }) {
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            CheckIcon(selected = trackedId != null && trackedId == spot.snapshot.id)
-                        },
-                        text = {
-                            Text(spot.snapshot.name + "  ·  " + formatDistance(spot.distanceM))
-                        },
-                        onClick = {
-                            expanded = false
-                            onSelect(spot.snapshot.id)
-                        },
-                    )
-                }
+                SpotRow(
+                    selected = trackedId != null && trackedId == spot.snapshot.id,
+                    muted = false,
+                    label = spot.snapshot.name + "  ·  " + formatDistance(spot.distanceM),
+                    onRowClick = {
+                        expanded = false
+                        onSelect(spot.snapshot.id)
+                    },
+                    onToggleMute = {
+                        onToggleMute(spot.snapshot.id, true)
+                    },
+                )
             }
             mutedSpots.forEach { spot ->
-                // Disabled spots: dimmed, taps are inert — long-press re-enables.
-                Box(Modifier.longPressPreempt(spot.id) {
-                    onToggleMute(spot.id, false)
-                }) {
-                    DropdownMenuItem(
-                        enabled = false,
-                        text = {
-                            Text(
-                                spot.name,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        onClick = {},
-                    )
-                }
+                // Muted spots: dimmed, the row itself is inert — the button re-enables.
+                SpotRow(
+                    selected = false,
+                    muted = true,
+                    label = spot.name,
+                    onRowClick = {},
+                    onToggleMute = {
+                        onToggleMute(spot.id, false)
+                    },
+                )
             }
         }
     }
 }
 
 /**
- * Detects a long press on the layout carrying this modifier — which must be a
- * PARENT of the item's own clickable (the DropdownMenuItem's row) — without
- * stealing quick taps. Pointer input on the parent runs before the child's, so
- * on the long-press timeout the callback fires and every pointer event is then
- * consumed until release; the child's click detector sees the consumed events
- * and can never complete the tap (no stray select after a mute). Before the
- * timeout nothing is consumed, so a quick tap reaches the item's own onClick.
+ * One spot row in the tracking dropdown: the label area (check mark, name and
+ * distance) selects the spot on tap, and the button on the right end mutes or
+ * unmutes it. The two clickables are SIBLINGS, never nested: a clickable parent
+ * consumes the down event before a clickable child could react, so the button
+ * must live outside the row's own clickable area to keep both tappable.
  */
-private fun Modifier.longPressPreempt(
-    key: Any,
-    onLongPress: () -> Unit,
-): Modifier = pointerInput(key) {
-    val longPressTimeout = viewConfiguration.longPressTimeoutMillis
-    awaitEachGesture {
-        awaitFirstDown()
-        try {
-            withTimeout(longPressTimeout) {
-                while (true) {
-                    val event = awaitPointerEvent()
-                    // Released before the long press: leave it to the item's click.
-                    if (event.changes.all { !it.pressed }) return@withTimeout
-                    // The menu scrolled (or the finger left the item): do nothing.
-                    if (event.changes.any { it.isConsumed || it.isOutOfBounds(size, extendedTouchPadding) }) {
-                        return@withTimeout
-                    }
+@Composable
+private fun SpotRow(
+    selected: Boolean,
+    muted: Boolean,
+    label: String,
+    onRowClick: () -> Unit,
+    onToggleMute: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .sizeIn(minWidth = 112.dp, maxWidth = 280.dp, minHeight = 48.dp)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .heightIn(min = 48.dp)
+                .clickable(enabled = !muted, onClick = onRowClick),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (!muted) {
+                // Constant 24dp slot so labels line up selected or not.
+                Box(modifier = Modifier.size(24.dp)) {
+                    CheckIcon(selected = selected)
                 }
+                Spacer(modifier = Modifier.width(12.dp))
             }
-        } catch (_: PointerEventTimeoutCancellationException) {
-            // Long press: toggle the spot, then consume everything until release
-            // so the item's click detector ignores the rest of the gesture.
-            onLongPress()
-            do {
-                val event = awaitPointerEvent()
-                event.changes.forEach { it.consume() }
-            } while (event.changes.any { it.pressed })
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = if (muted) MaterialTheme.colorScheme.onSurfaceVariant
+                else MaterialTheme.colorScheme.onSurface,
+            )
+        }
+        IconButton(
+            onClick = onToggleMute,
+            modifier = Modifier.size(48.dp),
+        ) {
+            Icon(
+                imageVector = if (muted) Icons.Filled.VolumeUp else Icons.Filled.VolumeOff,
+                contentDescription = stringResource(
+                    if (muted) R.string.unmute else R.string.mute_spot,
+                ),
+            )
         }
     }
 }
